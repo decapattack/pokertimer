@@ -1,0 +1,83 @@
+<!--<div class="container text-center mt-5">
+  <h2>Relógio Digital</h2>
+  <div class="display-1 text-primary my-4">
+    <i class="fas fa-clock"></i> {{ currentTime }}
+  </div>
+</div>
+-->
+<div class="poker-dashboard-wrapper"  [style.backgroundImage]="backgroundImageUrl">
+  <div class="container-fluid">
+    <div class="row text-center align-items-center py-2 header-row">
+      <div class="col-md-7 text-md-start">
+        <h1 class="main-title">MONSTER UNIVERSITÁRIO 10K</h1>
+      </div>
+      <div class="col-md-5 text-md-end">
+        <h2 class="online-id">ONLINE <span class="text-highlight">ID43211</span></h2>
+        <button class="btn btn-outline-light btn-sm me-2" (click)="fileInput.click()">
+          <i class="fa-solid fa-upload"></i> Fundo
+        </button>
+        
+        <button class="btn btn-outline-danger btn-sm" (click)="removerImagem()">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+
+        <input type="file" 
+               class="d-none" 
+               #fileInput 
+               (change)="onFileSelected($event)" 
+               accept="image/png, image/jpeg, image/webp">
+      </div>
+    </div>
+
+    <div class="row text-center align-items-center my-3 main-info-grid">
+      
+      <div class="col-md-3">
+        <div class="info-panel">
+          <div class="label text-highlight">
+            <i class="fa-solid fa-trophy"></i> NÍVEL 21
+          </div>
+          <div class="label"><i class="fa-solid fa-users me-2"></i>JOGADORES</div>
+          <div class="value">9 DE 66</div>
+          <div class="label"><i class="fa-solid fa-database"></i> MÉDIA</div>
+          <div class="value">1.466.111</div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="main-timer text-highlight">
+          {{ tempoRestante }}
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="info-panel">
+          <div class="label"><i class="fa-solid fa-hourglass-start"></i> TEMPO DE JOGO</div>
+          <div class="value">07:12:22</div>
+          <div class="label"><i class="fa-solid fa-clock"></i> INTERVALO EM</div>
+          <div class="value">14:31</div>
+          <div class="label"><i class="fa-solid fa-database"></i> CHIPCOUNT</div>
+          <div class="value">13.195.000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row text-center my-3">
+      <div class="col-12">
+        <div class="blinds-banner">
+          <div class="blinds-label">Blinds-Ante</div>
+          <div class="blinds-values">150.000 / 300.000 <span class="ante-value">300.000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row text-center footer-stats py-2">
+      <div class="col"><span>BUY-IN FREE</span>0</div>
+      <div class="col"><span>REBUY SIMPLES</span>22</div>
+      <div class="col"><span>ADDON</span>35</div>
+      <div class="col"><span>BUY-IN DUPLO</span>32</div>
+      <div class="col"><span>TX ADM</span>57</div>
+      <div class="col"><span>BUY-IN SIMPLES</span>30</div>
+      <div class="col"><span>TIME CHIP</span>15</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+/* painel-poker.component.scss */
+
+/* Importando uma fonte do Google Fonts que se parece com a da imagem */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Teko:wght@500;700&display=swap');
+
+/* --- Estilo Geral do Painel --- */
+.poker-dashboard-wrapper {
+  background-color: #0d1b2a; /* Azul bem escuro */
+  color: #e0e1dd;
+  font-family: 'Teko', sans-serif; /* Fonte que parece digital */
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 3px solid #415a77;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+  background-size: 100% 100%; /* ESTA LINHA FOI ALTERADA */
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
+
+  position: relative; 
+}
+
+/* ADIÇÃO 2: A camada de sombreamento (o overlay) */
+.poker-dashboard-wrapper::before {
+    content: ''; /* Obrigatório para pseudo-elementos */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    /* A cor do overlay: preto com 60% de opacidade */
+    background-color: rgba(0, 0, 0, 0.6); 
+    
+    /* Garante que o overlay também tenha cantos arredondados */
+    border-radius: inherit; 
+  }
+  
+  /* ADIÇÃO 3: Garante que o conteúdo fique ACIMA do overlay */
+  .poker-dashboard-wrapper .container-fluid {
+    position: relative;
+    z-index: 1;
+  }
+
+/* --- Cor de Destaque Laranja/Amarela --- */
+.text-highlight {
+  color: #fca311;
+}
+
+/* --- Cabeçalho --- */
+.main-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+.online-id {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+/* --- Painéis de Informação (Esquerda e Direita) --- */
+.info-panel .label, .info-panel .label-secondary {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #778da9;
+  text-transform: uppercase;
+}
+.info-panel .label i {
+  margin-right: 8px;
+}
+.info-panel .value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+}
+.info-panel .label.text-highlight {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* --- Cronômetro Gigante --- */
+.main-timer {
+  font-size: 10rem;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 15px rgba(252, 163, 17, 0.5);
+}
+
+/* --- Banner dos Blinds --- */
+.blinds-banner {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #415a77;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.blinds-banner .blinds-label {
+  font-size: 1.5rem;
+  color: #778da9;
+}
+.blinds-banner .blinds-values {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+.blinds-banner .ante-value {
+  color: #e0e1dd;
+  font-size: 2rem;
+  margin-left: 20px;
+}
+
+/* --- Rodapé de Estatísticas --- */
+.footer-stats {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+.footer-stats .col {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  border-right: 1px solid #415a77;
+}
+.footer-stats .col:last-child {
+  border-right: none;
+}
+.footer-stats span {
+  font-weight: 700;
+  color: #778da9;
+}
+
+/* --- Ajustes para Telas Menores (Responsividade) --- */
+@media (max-width: 768px) {
+  .main-timer {
+    font-size: 6rem;
+    margin: 2rem 0;
+  }
+  .main-title, .online-id {
+    text-align: center;
+  }
+  .blinds-values {
+    font-size: 1.8rem !important;
+  }
+  .footer-stats {
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha */
+  }
+  .footer-stats .col {
+    flex-basis: 50%; /* Ocupa 50% da largura */
+    border-bottom: 1px solid #415a77;
+  }
+}
