@@ -36,8 +36,10 @@
           <div class="label text-highlight">
             <i class="fa-solid fa-trophy"></i> NÍVEL 21
           </div>
-          <div class="label"><i class="fa-solid fa-users me-2"></i>JOGADORES</div>
-          <div class="value">9 DE 66</div>
+          <div class="clickable" (click)="isPlayersModalOpen = true">
+            <div class="label"><i class="fa-solid fa-users me-2"></i>JOGADORES</div>
+            <div class="value">{{ jogadoresAtuais }} DE {{ jogadoresTotais }}</div>
+          </div>
           <div class="label"><i class="fa-solid fa-database"></i> MÉDIA</div>
           <div class="value">1.466.111</div>
         </div>
@@ -55,8 +57,10 @@
           <div class="value">07:12:22</div>
           <div class="label"><i class="fa-solid fa-clock"></i> INTERVALO EM</div>
           <div class="value">14:31</div>
-          <div class="label"><i class="fa-solid fa-database"></i> CHIPCOUNT</div>
-          <div class="value">13.195.000</div>
+          <div class="clickable" (click)="isChipcountModalOpen = true">
+            <div class="label"><i class="fa-solid fa-database"></i> CHIPCOUNT</div>
+            <div class="value">{{ chipcount | number }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -65,7 +69,10 @@
       <div class="col-12">
         <div class="blinds-banner">
           <div class="blinds-label">Blinds-Ante</div>
-          <div class="blinds-values">150.000 / 300.000 <span class="ante-value">300.000</span></div>
+          <div class="blinds-values">
+            {{ smallBlind | number }} / {{ bigBlind | number }} 
+             <span class="ante-value">{{ (ante | number) || '-' }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -81,3 +88,18 @@
     </div>
   </div>
 </div>
+
+<app-players-modal 
+  *ngIf="isPlayersModalOpen"
+  [jogadoresAtuais]="jogadoresAtuais"
+  [jogadoresTotais]="jogadoresTotais"
+  (close)="isPlayersModalOpen = false"
+  (update)="atualizarJogadores($event)">
+</app-players-modal>
+
+<app-chipcount-modal
+  *ngIf="isChipcountModalOpen"
+  [valorInicial]="chipcount"
+  (close)="isChipcountModalOpen = false"
+  (update)="atualizarChipcount($event)">
+</app-chipcount-modal>

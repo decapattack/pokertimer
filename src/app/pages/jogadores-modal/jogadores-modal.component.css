@@ -1,0 +1,72 @@
+/* Estilo para o fundo escuro que fica atrás do modal */
+.modal-backdrop {
+  position: fixed; /* Posição fixa para cobrir toda a tela */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 100% da largura da tela */
+  height: 100vh; /* 100% da altura da tela */
+  background-color: rgba(0, 0, 0, 0.7); /* Cor preta com 70% de opacidade */
+  z-index: 999; /* Garante que o fundo fique acima de outros conteúdos */
+}
+
+/* Estilo para a caixa de conteúdo do modal */
+.modal-content {
+  position: fixed; /* Posição fixa no centro da tela */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centraliza o elemento precisamente */
+  background-color: #2c2c2c; /* Cor de fundo escura */
+  color: white; /* Cor do texto */
+  padding: 30px 40px;
+  border-radius: 12px;
+  border: 1px solid #ffc107; /* Borda amarela, combinando com seu layout */
+  z-index: 1000; /* Garante que o modal fique acima do fundo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Espaço entre o ícone e o painel de controles */
+}
+
+/* Estilo para o ícone no topo do modal */
+.modal-icon {
+  font-size: 3rem; /* Tamanho grande para o ícone */
+  color: #ffc107; /* Cor amarela */
+}
+
+/* Contêiner para os controles (+, -, números) */
+.controls-panel {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* Espaço entre os botões e o texto */
+}
+
+/* Estilo para os números "9 de 66" */
+.players-display {
+  font-size: 1.8rem;
+  font-weight: bold;
+  min-width: 150px; /* Largura mínima para evitar que o layout "pule" */
+  text-align: center;
+}
+
+/* Estilo para os botões de controle '-' e '+' */
+.btn-control {
+  background-color: #ffc107; /* Cor de fundo amarela */
+  color: #1a1a1a; /* Cor do texto escura */
+  border: none;
+  border-radius: 50%; /* Deixa o botão redondo */
+  width: 50px;
+  height: 50px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5px; /* Ajuste para centralizar o texto verticalmente */
+  transition: background-color 0.2s;
+}
+
+.btn-control:hover {
+  background-color: #ffca2c; /* Cor mais clara ao passar o mouse */
+}
+

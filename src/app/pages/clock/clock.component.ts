@@ -1,31 +1,68 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Sanitizer, SecurityContext } from '@angular/core';
+import { Component, OnInit, OnDestroy, SecurityContext } from '@angular/core';
 import { Subscription, interval, map, take } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { JogadoresModalComponent } from '../jogadores-modal/jogadores-modal.component';
+import { ChipcountModalComponent } from '../chipcount-modal/chipcount-modal.component';
+import { FormsModule } from '@angular/forms'; // Importe o FormsModule aqui também
+// MODIFICADO: Importamos de 'blind.service' e usamos os novos nomes
+import { BlindService, NivelDeBlind } from '../../service/blind.service';
+
 
 @Component({
   selector: 'app-clock',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, JogadoresModalComponent, ChipcountModalComponent, FormsModule],
   templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.scss']
+  styleUrls: ['./clock.component.css']
+
 })
 export class ClockComponent implements OnInit, OnDestroy {
-  public tempoRestante: string = '15:00'; 
-  private readonly tempoInicialEmSegundos = 15 * 60; 
+  public tempoRestante: string = '15:00';
+  private readonly tempoInicialEmSegundos = 15 * 60;
   private timerSubscription: Subscription | undefined;
   public backgroundImageUrl: string | null = null;
+   // 3. Adicione as variáveis para o modal e para os jogadores
+  public isPlayersModalOpen = false;
+  public jogadoresAtuais = 9;
+  public jogadoresTotais = 66;
+  // 3. Adicione as variáveis para o novo modal e para o chipcount
+  public isChipcountModalOpen = false;
+  // Use um número para facilitar a manipulação
+  public chipcount: number = 13195000; 
 
-  constructor(private sanitizer: DomSanitizer) { }
+    // ---> MODIFICADO: Variáveis que serão preenchidas pelos dados vindos do serviço.
+  public smallBlind: number = 0;
+  public bigBlind: number = 0;
+  public ante: number | null = null;
+
+  // ---> NOVO: Subscrição para ouvir as atualizações do BlindService.
+  private blindsSubscription: Subscription | undefined;
+
+  constructor(
+    private sanitizer: DomSanitizer,
+    private blindService: BlindService) { }
 
   ngOnInit(): void {
     this.iniciarTimer();
     this.carregarImagemDeFundo();
+    this.blindsSubscription = this.blindService.blindsAtuais$.subscribe(
+      (nivel: NivelDeBlind) => { // Usamos a nova interface
+        this.smallBlind = nivel.sb;
+        this.bigBlind = nivel.bb;
+        this.ante = nivel.ante;
+        console.log(`Nível atualizado: SB ${nivel.sb} / BB ${nivel.bb}`);
+      }
+    );
   }
 
   ngOnDestroy(): void {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
+    }
+    // ---> NOVO: Ao destruir o componente, cancelamos a inscrição para evitar vazamentos de memória.
+    if (this.blindsSubscription) {
+      this.blindsSubscription.unsubscribe();
     }
   }
 
@@ -37,7 +74,7 @@ export class ClockComponent implements OnInit, OnDestroy {
       // O operador `take` garante que o timer vai parar após emitir N vezes.
       // Neste caso, ele vai emitir 900 vezes (o total de segundos).
       take(this.tempoInicialEmSegundos),
-      
+
       // O operador `map` transforma o valor emitido.
       // 'tick' começa em 0, 1, 2...
       // A cada tick, calculamos quantos segundos restam.
@@ -51,6 +88,9 @@ export class ClockComponent implements OnInit, OnDestroy {
       // O 'complete' é chamado quando o `take` finaliza a contagem.
       complete: () => {
         this.tempoRestante = '00:00';
+        this.blindService.avancarNivel();
+        // ---> CORREÇÃO PRINCIPAL: Adicionamos esta linha para reiniciar o ciclo.
+        this.iniciarTimer(); 
         // Aqui você poderia adicionar uma lógica para o que acontece quando o tempo acaba.
         console.log('O tempo acabou!');
       }
@@ -122,7 +162,7 @@ export class ClockComponent implements OnInit, OnDestroy {
     const urlSegura = this.sanitizer.bypassSecurityTrustUrl(base64String);
     this.backgroundImageUrl = `url(${this.sanitizer.sanitize(SecurityContext.URL, urlSegura)})`;
   }
-  
+
   /**
    * Remove a imagem do localStorage e da tela.
    */
@@ -131,5 +171,20 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.backgroundImageUrl = null;
   }
 
+   /**
+   * Função para atualizar o número de jogadores quando o modal emitir o evento.
+   * @param novoValor O novo número de jogadores vindo do modal.
+   */
+  public atualizarJogadores(novoValor: number): void {
+    this.jogadoresAtuais = novoValor;
+  }
+
+  /**
+   * Função para atualizar o valor do chipcount quando o modal emitir o evento.
+   * @param novoValor O novo valor vindo do modal de chipcount.
+   */
+  public atualizarChipcount(novoValor: number): void {
+    this.chipcount = novoValor;
+  }
 
 }
