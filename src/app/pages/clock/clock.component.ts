@@ -24,12 +24,12 @@ export class ClockComponent implements OnInit, OnDestroy {
   public backgroundImageUrl: string | null = null;
    // 3. Adicione as variáveis para o modal e para os jogadores
   public isPlayersModalOpen = false;
-  public jogadoresAtuais = 9;
-  public jogadoresTotais = 66;
+  public jogadoresAtuais = 0;
+  public jogadoresTotais = 100;
   // 3. Adicione as variáveis para o novo modal e para o chipcount
   public isChipcountModalOpen = false;
   // Use um número para facilitar a manipulação
-  public chipcount: number = 13195000; 
+  public chipcount: number = 0; 
 
     // ---> MODIFICADO: Variáveis que serão preenchidas pelos dados vindos do serviço.
   public smallBlind: number = 0;

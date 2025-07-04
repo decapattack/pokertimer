@@ -49,24 +49,4 @@
 }
 
 /* Estilo para os botões de controle '-' e '+' */
-.btn-control {
-  background-color: #ffc107; /* Cor de fundo amarela */
-  color: #1a1a1a; /* Cor do texto escura */
-  border: none;
-  border-radius: 50%; /* Deixa o botão redondo */
-  width: 50px;
-  height: 50px;
-  font-size: 2.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 5px; /* Ajuste para centralizar o texto verticalmente */
-  transition: background-color 0.2s;
-}
-
-.btn-control:hover {
-  background-color: #ffca2c; /* Cor mais clara ao passar o mouse */
-}
 

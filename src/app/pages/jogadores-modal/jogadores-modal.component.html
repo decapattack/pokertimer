@@ -6,16 +6,18 @@
   </div>
 
   <div class="controls-panel">
-    <button class="btn-control" (click)="decrementar()" aria-label="Diminuir jogadores">
-      -
-    </button>
-    
-    <div class="players-display">
-      {{ jogadoresAtuais }} de {{ jogadoresTotais }}
-    </div>
 
-    <button class="btn-control" (click)="incrementar()" aria-label="Aumentar jogadores">
-      +
-    </button>
+  <button class="btn btn-danger btn-lg" (click)="decrementar()" aria-label="Diminuir jogadores">
+    <i class="fa-solid fa-minus"></i>
+  </button>
+  
+  <div class="players-display">
+    {{ jogadoresAtuais }} de {{ jogadoresTotais }}
   </div>
+
+
+  <button class="btn btn-success btn-lg" (click)="incrementar()" aria-label="Aumentar jogadores">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+</div>
 </div>
