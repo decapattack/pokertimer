@@ -1,0 +1,41 @@
+<div class="options-overlay" (click)="onClose()">
+  <div class="options-content" (click)="$event.stopPropagation()">
+    
+    <div class="options-header">
+      <h1>Opções</h1>
+      <button class="btn-close-options" (click)="onClose()" title="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="options-body">
+      <table class="table table-borderless text-center align-middle">
+        <tbody>
+          <tr>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo de jogo</button></td>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Tempo total</button></td>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo</button></td>
+          </tr>
+          <tr>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Ante</button></td>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Menor Chip</button></td>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Start Stack</button></td>
+          </tr>
+          <tr>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Botao 1</button></td>
+            <td><button type="button" class="btn btn-lg btn-primary w-100">Logo</button></td>
+            <td>
+              <button 
+                type="button" 
+                class="btn btn-lg btn-primary w-100" 
+                (click)="openBackgroundOptions.emit()">
+                Background
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

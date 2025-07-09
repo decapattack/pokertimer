@@ -1,190 +1,182 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, SecurityContext } from '@angular/core';
-import { Subscription, interval, map, take } from 'rxjs';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { JogadoresModalComponent } from '../jogadores-modal/jogadores-modal.component';
-import { ChipcountModalComponent } from '../chipcount-modal/chipcount-modal.component';
-import { FormsModule } from '@angular/forms'; // Importe o FormsModule aqui também
-// MODIFICADO: Importamos de 'blind.service' e usamos os novos nomes
-import { BlindService, NivelDeBlind } from '../../service/blind.service';
+import { Component, OnInit, OnDestroy, SecurityContext } from "@angular/core";
+import { Subscription, interval, map, take } from "rxjs";
+import { DomSanitizer } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { JogadoresModalComponent } from "../jogadores-modal/jogadores-modal.component";
+import { ChipcountModalComponent } from "../chipcount-modal/chipcount-modal.component";
+import { OptionsModalComponent } from "../options-modal/options-modal.component";
+import { BackgroundModalComponent } from "../background-modal/background-modal.component";
+import { BlindService, NivelDeBlind } from "../../service/blind.service";
 
+// ---> Importamos as ferramentas do Angular CDK para detectar o tamanho da tela
+import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 
 @Component({
-  selector: 'app-clock',
+  selector: "app-clock",
   standalone: true,
-  imports: [CommonModule, JogadoresModalComponent, ChipcountModalComponent, FormsModule],
-  templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.css']
-
+  imports: [
+    CommonModule,
+    FormsModule,
+    JogadoresModalComponent,
+    ChipcountModalComponent,
+    OptionsModalComponent,
+    BackgroundModalComponent,
+  ],
+  templateUrl: "./clock.component.html",
+  styleUrls: ["./clock.component.css"],
 })
 export class ClockComponent implements OnInit, OnDestroy {
-  public tempoRestante: string = '15:00';
-  private readonly tempoInicialEmSegundos = 15 * 60;
+  // ---> Esta é a variável que controla qual layout (PC ou Mobile) é exibido no HTML.
+  public isMobile: boolean = false;
+
+  // --- Propriedades de estado da aplicação ---
+  public isBackgroundModalOpen = false;
+  public isOptionsModalOpen = false;
+  public tempoRestante: string = "15:00";
+  private readonly tempoInicialEmSegundos = 15 * 60; //15 * 60
   private timerSubscription: Subscription | undefined;
   public backgroundImageUrl: string | null = null;
-   // 3. Adicione as variáveis para o modal e para os jogadores
   public isPlayersModalOpen = false;
-  public jogadoresAtuais = 0;
+  public jogadoresAtuais = 9;
   public jogadoresTotais = 100;
-  // 3. Adicione as variáveis para o novo modal e para o chipcount
   public isChipcountModalOpen = false;
-  // Use um número para facilitar a manipulação
-  public chipcount: number = 0; 
-
-    // ---> MODIFICADO: Variáveis que serão preenchidas pelos dados vindos do serviço.
+  public chipcount: number = 0;
   public smallBlind: number = 0;
   public bigBlind: number = 0;
   public ante: number | null = null;
-
-  // ---> NOVO: Subscrição para ouvir as atualizações do BlindService.
   private blindsSubscription: Subscription | undefined;
 
+  /**
+   * ---> No construtor, injetamos o BreakpointObserver e nos inscrevemos para
+   * ouvir as mudanças de tamanho da tela, atualizando a variável 'isMobile'.
+   */
   constructor(
     private sanitizer: DomSanitizer,
-    private blindService: BlindService) { }
+    private blindService: BlindService,
+    private breakpointObserver: BreakpointObserver
+  ) {
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall, // Telas de celular em modo retrato
+        Breakpoints.Small, // Telas de celular em modo paisagem ou tablets pequenos
+      ])
+      .subscribe((result) => {
+        // 'result.matches' será TRUE se a tela corresponder a um dos tamanhos observados.
+        this.isMobile = result.matches;
+      });
+  }
 
+  /**
+   * Ao iniciar, o componente carrega os dados iniciais e se inscreve
+   * para receber as atualizações dos blinds do nosso serviço.
+   */
   ngOnInit(): void {
-    this.iniciarTimer();
     this.carregarImagemDeFundo();
+    this.iniciarTimer();
+
     this.blindsSubscription = this.blindService.blindsAtuais$.subscribe(
-      (nivel: NivelDeBlind) => { // Usamos a nova interface
+      (nivel: NivelDeBlind) => {
         this.smallBlind = nivel.sb;
         this.bigBlind = nivel.bb;
         this.ante = nivel.ante;
-        console.log(`Nível atualizado: SB ${nivel.sb} / BB ${nivel.bb}`);
       }
     );
   }
 
+  /**
+   * Ao destruir o componente, cancelamos todas as inscrições para evitar vazamentos de memória.
+   */
   ngOnDestroy(): void {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
-    // ---> NOVO: Ao destruir o componente, cancelamos a inscrição para evitar vazamentos de memória.
     if (this.blindsSubscription) {
       this.blindsSubscription.unsubscribe();
     }
   }
 
+  /**
+   * Controla o ciclo do timer de 15 minutos e chama o serviço de blinds para avançar o nível.
+   */
   private iniciarTimer(): void {
-    // Cria um observable que emite um número a cada 1000 ms (1 segundo).
-    const source = interval(1000);
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
 
-    this.timerSubscription = source.pipe(
-      // O operador `take` garante que o timer vai parar após emitir N vezes.
-      // Neste caso, ele vai emitir 900 vezes (o total de segundos).
-      take(this.tempoInicialEmSegundos),
-
-      // O operador `map` transforma o valor emitido.
-      // 'tick' começa em 0, 1, 2...
-      // A cada tick, calculamos quantos segundos restam.
-      map(tick => this.tempoInicialEmSegundos - (tick + 1))
-
-    ).subscribe({
-      // O 'next' é chamado a cada segundo com o novo valor (segundosRestantes).
-      next: (segundosRestantes) => {
-        this.tempoRestante = this.formatarTempo(segundosRestantes);
-      },
-      // O 'complete' é chamado quando o `take` finaliza a contagem.
-      complete: () => {
-        this.tempoRestante = '00:00';
-        this.blindService.avancarNivel();
-        // ---> CORREÇÃO PRINCIPAL: Adicionamos esta linha para reiniciar o ciclo.
-        this.iniciarTimer(); 
-        // Aqui você poderia adicionar uma lógica para o que acontece quando o tempo acaba.
-        console.log('O tempo acabou!');
-      }
-    });
+    this.timerSubscription = interval(1000)
+      .pipe(
+        take(this.tempoInicialEmSegundos),
+        map((tick) => this.tempoInicialEmSegundos - (tick + 1))
+      )
+      .subscribe({
+        next: (segundosRestantes) => {
+          this.tempoRestante = this.formatarTempo(segundosRestantes);
+        },
+        complete: () => {
+          this.tempoRestante = "00:00";
+          this.blindService.avancarNivel();
+          this.iniciarTimer();
+        },
+      });
   }
 
   /**
-   * Função auxiliar para formatar o tempo de segundos para MM:SS.
-   * @param totalSegundos O número total de segundos a ser formatado.
-   * @returns Uma string no formato "MM:SS".
+   * Formata o tempo de segundos para o formato MM:SS.
    */
   private formatarTempo(totalSegundos: number): string {
     const minutos = Math.floor(totalSegundos / 60);
     const segundos = totalSegundos % 60;
-
-    // `padStart` garante que teremos sempre 2 dígitos (ex: '01' em vez de '1').
-    const minutosFormatados = String(minutos).padStart(2, '0');
-    const segundosFormatados = String(segundos).padStart(2, '0');
-
+    const minutosFormatados = String(minutos).padStart(2, "0");
+    const segundosFormatados = String(segundos).padStart(2, "0");
     return `${minutosFormatados}:${segundosFormatados}`;
   }
 
-  /**
-   * Chamado quando o usuário seleciona um arquivo no input.
-   */
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
+  // --- Métodos de interação com a UI (upload, modais, etc.) ---
 
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      // Quando o leitor terminar de carregar o arquivo...
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        // Salva no localStorage e aplica como fundo
-        this.salvarEAplicarImagem(base64String);
-      };
-
-      // Inicia a leitura do arquivo, convertendo-o para uma URL Base64
-      reader.readAsDataURL(file);
-    }
+  // ---> 4. MÉTODO ATUALIZADO PARA RECEBER UM ARQUIVO, NÃO UM EVENTO <---
+  onFileSelected(file: File): void {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.salvarEAplicarImagem(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   }
 
-  /**
-   * Salva a string Base64 no localStorage e atualiza a propriedade do componente.
-   */
   private salvarEAplicarImagem(base64String: string): void {
-    // Salva a string no "banco" do navegador com a chave 'pokerDashboardBackground'
-    localStorage.setItem('pokerDashboardBackground', base64String);
+    localStorage.setItem("pokerDashboardBackground", base64String);
     this.aplicarImagemDeFundo(base64String);
   }
 
-  /**
-   * Carrega a imagem do localStorage, se existir.
-   */
   private carregarImagemDeFundo(): void {
-    const imagemSalva = localStorage.getItem('pokerDashboardBackground');
+    const imagemSalva = localStorage.getItem("pokerDashboardBackground");
     if (imagemSalva) {
       this.aplicarImagemDeFundo(imagemSalva);
     }
   }
 
-  /**
-   * Atualiza a variável que está ligada ao estilo do template.
-   */
   private aplicarImagemDeFundo(base64String: string): void {
-    // Usamos o sanitizer do Angular para marcar a URL como segura
     const urlSegura = this.sanitizer.bypassSecurityTrustUrl(base64String);
-    this.backgroundImageUrl = `url(${this.sanitizer.sanitize(SecurityContext.URL, urlSegura)})`;
+    this.backgroundImageUrl = `url(${this.sanitizer.sanitize(
+      SecurityContext.URL,
+      urlSegura
+    )})`;
   }
 
-  /**
-   * Remove a imagem do localStorage e da tela.
-   */
   public removerImagem(): void {
-    localStorage.removeItem('pokerDashboardBackground');
+    localStorage.removeItem("pokerDashboardBackground");
     this.backgroundImageUrl = null;
   }
 
-   /**
-   * Função para atualizar o número de jogadores quando o modal emitir o evento.
-   * @param novoValor O novo número de jogadores vindo do modal.
-   */
   public atualizarJogadores(novoValor: number): void {
     this.jogadoresAtuais = novoValor;
   }
-
-  /**
-   * Função para atualizar o valor do chipcount quando o modal emitir o evento.
-   * @param novoValor O novo valor vindo do modal de chipcount.
-   */
   public atualizarChipcount(novoValor: number): void {
     this.chipcount = novoValor;
   }
 
+  public openBackgroundModal(): void {
+    this.isOptionsModalOpen = false;
+    this.isBackgroundModalOpen = true;
+  }
 }

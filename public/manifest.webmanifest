@@ -1,6 +1,6 @@
   {
-  "name": "minha-pwa",
-  "short_name": "minha-pwa",
+  "name": "Poker-Timer",
+  "short_name": "Poker-Timer",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
