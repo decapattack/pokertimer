@@ -154,14 +154,21 @@
     *ngIf="isOptionsModalOpen"
     (close)="isOptionsModalOpen = false"
     (openBackgroundOptions)="openBackgroundModal()"
+    (openGameTypeOptions)="openGameTypeModal()"
   >
   </app-options-modal>
 
-  NOVO MODAL DE BACKGROUND <--- -->
+  <!--NOVO MODAL DE BACKGROUND--> 
   <app-background-modal
     *ngIf="isBackgroundModalOpen"
     (close)="isBackgroundModalOpen = false"
     (fileSelected)="onFileSelected($event)"
     (removeImage)="removerImagem()">
   </app-background-modal>
+
+  <!--NOVO MODAL DE TIPO DE JOGO  -->
+  <app-game-type-modal
+    *ngIf="isGameTypeModalOpen"
+    (close)="isGameTypeModalOpen = false"
+    (timeSelected)="definirTempoDeJogo($event)"> </app-game-type-modal>
 </div>

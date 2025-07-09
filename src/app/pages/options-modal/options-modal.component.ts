@@ -15,6 +15,7 @@ export class OptionsModalComponent {
   @Output() close = new EventEmitter<void>();
 
   @Output() openBackgroundOptions = new EventEmitter<void>();
+  @Output() openGameTypeOptions = new EventEmitter<void>();
 
   onClose(): void {
     this.close.emit();

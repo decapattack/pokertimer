@@ -12,7 +12,14 @@
       <table class="table table-borderless text-center align-middle">
         <tbody>
           <tr>
-            <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo de jogo</button></td>
+            <td>
+              <button 
+                type="button" 
+                class="btn btn-lg btn-primary w-100" 
+                (click)="openGameTypeOptions.emit()">
+                Tipo de jogo
+              </button>
+            </td>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Tempo total</button></td>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo</button></td>
           </tr>

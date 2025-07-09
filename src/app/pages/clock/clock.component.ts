@@ -7,6 +7,7 @@ import { JogadoresModalComponent } from "../jogadores-modal/jogadores-modal.comp
 import { ChipcountModalComponent } from "../chipcount-modal/chipcount-modal.component";
 import { OptionsModalComponent } from "../options-modal/options-modal.component";
 import { BackgroundModalComponent } from "../background-modal/background-modal.component";
+import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.component";
 import { BlindService, NivelDeBlind } from "../../service/blind.service";
 
 // ---> Importamos as ferramentas do Angular CDK para detectar o tamanho da tela
@@ -22,6 +23,7 @@ import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
     ChipcountModalComponent,
     OptionsModalComponent,
     BackgroundModalComponent,
+    GameTypeModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -31,10 +33,11 @@ export class ClockComponent implements OnInit, OnDestroy {
   public isMobile: boolean = false;
 
   // --- Propriedades de estado da aplicação ---
+  public isGameTypeModalOpen = false;
   public isBackgroundModalOpen = false;
   public isOptionsModalOpen = false;
   public tempoRestante: string = "15:00";
-  private readonly tempoInicialEmSegundos = 15 * 60; //15 * 60
+  private tempoInicialEmSegundos = 15 * 60; //15 * 60
   private timerSubscription: Subscription | undefined;
   public backgroundImageUrl: string | null = null;
   public isPlayersModalOpen = false;
@@ -73,7 +76,7 @@ export class ClockComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.carregarImagemDeFundo();
-    this.iniciarTimer();
+    this.iniciarTimer(this.tempoInicialEmSegundos);
 
     this.blindsSubscription = this.blindService.blindsAtuais$.subscribe(
       (nivel: NivelDeBlind) => {
@@ -99,7 +102,7 @@ export class ClockComponent implements OnInit, OnDestroy {
   /**
    * Controla o ciclo do timer de 15 minutos e chama o serviço de blinds para avançar o nível.
    */
-  private iniciarTimer(): void {
+  private iniciarTimer(duracaoEmSegundos: number): void {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
@@ -116,7 +119,7 @@ export class ClockComponent implements OnInit, OnDestroy {
         complete: () => {
           this.tempoRestante = "00:00";
           this.blindService.avancarNivel();
-          this.iniciarTimer();
+          this.iniciarTimer(this.tempoInicialEmSegundos);
         },
       });
   }
@@ -178,5 +181,21 @@ export class ClockComponent implements OnInit, OnDestroy {
   public openBackgroundModal(): void {
     this.isOptionsModalOpen = false;
     this.isBackgroundModalOpen = true;
+  }
+
+  // ---> 6. CRIE OS MÉTODOS PARA CONTROLAR O NOVO FLUXO <---
+
+  public openGameTypeModal(): void {
+    this.isOptionsModalOpen = false;
+    this.isGameTypeModalOpen = true;
+  }
+
+  public definirTempoDeJogo(segundos: number): void {
+    // Atualiza o valor padrão para as próximas reinicializações automáticas
+    this.tempoInicialEmSegundos = segundos;
+    // Fecha o modal
+    this.isGameTypeModalOpen = false;
+    // Inicia o timer imediatamente com o novo valor
+    this.iniciarTimer(this.tempoInicialEmSegundos);
   }
 }
