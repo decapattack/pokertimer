@@ -4,7 +4,8 @@
   <div *ngIf="!isMobile" class="container-fluid">
     <div class="row text-center align-items-center py-2">
       <div class="col-md-7 text-md-start">
-        <h1 class="main-title">MONSTER UNIVERSITÁRIO 10K</h1>
+        <img *ngIf="logoUrl" [src]="logoUrl" class="main-logo-img" alt="Logo do Torneio">
+        <h1 *ngIf="!logoUrl" class="main-title">MONSTER UNIVERSITÁRIO 10K</h1>
       </div>
       <div class="col-md-5 text-md-end">
         <h2 class="online-id">
@@ -155,6 +156,7 @@
     (close)="isOptionsModalOpen = false"
     (openBackgroundOptions)="openBackgroundModal()"
     (openGameTypeOptions)="openGameTypeModal()"
+    (openLogoOptions)="openLogoModal()"
   >
   </app-options-modal>
 
@@ -170,5 +172,13 @@
   <app-game-type-modal
     *ngIf="isGameTypeModalOpen"
     (close)="isGameTypeModalOpen = false"
-    (timeSelected)="definirTempoDeJogo($event)"> </app-game-type-modal>
+    (timeSelected)="definirTempoDeJogo($event)">
+  </app-game-type-modal>
+
+  <app-logo-modal
+    *ngIf="isLogoModalOpen"
+    (close)="isLogoModalOpen = false"
+    (fileSelected)="onLogoFileSelected($event)"
+    (removeImage)="removerLogo()">
+  </app-logo-modal>
 </div>

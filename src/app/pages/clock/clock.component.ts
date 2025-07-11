@@ -9,6 +9,8 @@ import { OptionsModalComponent } from "../options-modal/options-modal.component"
 import { BackgroundModalComponent } from "../background-modal/background-modal.component";
 import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.component";
 import { BlindService, NivelDeBlind } from "../../service/blind.service";
+import { LogoModalComponent } from "../logo-modal/logo-modal.component"; // 1. Importe
+
 
 // ---> Importamos as ferramentas do Angular CDK para detectar o tamanho da tela
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
@@ -23,7 +25,8 @@ import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
     ChipcountModalComponent,
     OptionsModalComponent,
     BackgroundModalComponent,
-    GameTypeModalComponent
+    GameTypeModalComponent,
+    LogoModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -49,6 +52,8 @@ export class ClockComponent implements OnInit, OnDestroy {
   public bigBlind: number = 0;
   public ante: number | null = null;
   private blindsSubscription: Subscription | undefined;
+  public logoUrl: string | null = null;
+  public isLogoModalOpen = false;
 
   /**
    * ---> No construtor, injetamos o BreakpointObserver e nos inscrevemos para
@@ -76,6 +81,7 @@ export class ClockComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.carregarImagemDeFundo();
+    this.carregarLogo();
     this.iniciarTimer(this.tempoInicialEmSegundos);
 
     this.blindsSubscription = this.blindService.blindsAtuais$.subscribe(
@@ -197,5 +203,43 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.isGameTypeModalOpen = false;
     // Inicia o timer imediatamente com o novo valor
     this.iniciarTimer(this.tempoInicialEmSegundos);
+  }
+
+  // ---> 5. LÓGICA PARA A LOGO (copiada e adaptada da lógica do background) <---
+  
+  public openLogoModal(): void {
+    this.isOptionsModalOpen = false;
+    this.isLogoModalOpen = true;
+  }
+
+  onLogoFileSelected(file: File): void {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.salvarEAplicarLogo(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  private salvarEAplicarLogo(base64String: string): void {
+    localStorage.setItem("pokerDashboardLogo", base64String);
+    this.aplicarLogo(base64String);
+  }
+
+  private carregarLogo(): void {
+    const logoSalva = localStorage.getItem("pokerDashboardLogo");
+    if (logoSalva) {
+      this.aplicarLogo(logoSalva);
+    }
+  }
+
+  private aplicarLogo(base64String: string): void {
+    // Aqui não precisamos da "url()", pois vamos usar no [src] de uma <img>
+    const urlSegura = this.sanitizer.bypassSecurityTrustUrl(base64String);
+    this.logoUrl = this.sanitizer.sanitize(SecurityContext.URL, urlSegura);
+  }
+
+  public removerLogo(): void {
+    localStorage.removeItem("pokerDashboardLogo");
+    this.logoUrl = null;
   }
 }

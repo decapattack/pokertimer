@@ -98,3 +98,17 @@
   color: #fca311;
   margin-top: 0;
 }
+
+/* Estilo para a logo no layout de Desktop */
+.main-logo-img {
+  max-height: 45px; /* Define uma altura máxima */
+  width: auto;      /* Mantém a proporção */
+  max-width: 100%;  /* Garante que não ultrapasse a largura do container */
+}
+
+/* Estilo para a logo no layout Mobile */
+.main-logo-img-mobile {
+  max-height: 35px;
+  width: auto;
+  max-width: 100%;
+}

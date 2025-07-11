@@ -30,7 +30,14 @@
           </tr>
           <tr>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Botao 1</button></td>
-            <td><button type="button" class="btn btn-lg btn-primary w-100">Logo</button></td>
+            <td>
+              <button 
+                type="button" 
+                class="btn btn-lg btn-primary w-100"
+                (click)="openLogoOptions.emit()">
+                Logo
+              </button>
+            </td>
             <td>
               <button 
                 type="button" 
