@@ -1,0 +1,48 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1" (click)="onClose()">
+  
+  <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title h2">Configurar Ante</h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Fechar"></button>
+      </div>
+      
+      <div class="modal-body">
+        
+        <div class="mb-3">
+          <label for="typeSelector" class="form-label">Tipo de Cálculo do Ante</label>
+          <select id="typeSelector" class="form-select form-select-lg" [(ngModel)]="selectedType">
+            <option value="initial">Valor Inicial Fixo</option>
+            <option value="fraction">Fração do Big Blind</option>
+          </select>
+        </div>
+
+        <div *ngIf="selectedType === 'initial'" class="mb-3">
+          <label for="initialAnte" class="form-label">Ante Inicial (a partir do BB 200)</label>
+          <select id="initialAnte" class="form-select form-select-lg" [(ngModel)]="selectedInitialValue">
+            <option *ngFor="let value of initialAnteOptions" [value]="value">{{ value }}</option>
+          </select>
+        </div>
+        
+        <div *ngIf="selectedType === 'fraction'" class="mb-3">
+          <label for="fractionAnte" class="form-label">Fração (a partir do BB 200)</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text">1 /</span>
+            <select id="fractionAnte" class="form-select" [(ngModel)]="selectedFractionValue">
+              <option *ngFor="let value of fractionOptions" [value]="value">{{ value }}</option>
+            </select>
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-lg" (click)="onClose()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onSave()">Salvar</button>
+      </div>
+
+    </div>
+  </div>
+</div>

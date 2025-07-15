@@ -16,6 +16,9 @@
   align-items: center;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
+  /* Adicionado para permitir rolagem em telas pequenas */
+  overflow-y: auto;
+  padding: 1rem;
 }
 
 .options-content {
@@ -77,4 +80,29 @@
 
 .options-body .table td {
   padding: 0.75rem; /* Espaçamento entre os botões */
+}
+
+/* --- ✨ NOVA SEÇÃO RESPONSIVA ✨ --- */
+/* Estilos aplicados em telas com largura de 767px ou menos (tablets e celulares) */
+@media (max-width: 767px) {
+  .options-header h1 {
+    font-size: 2.5rem; /* Diminui um pouco o título */
+  }
+  
+  /* Quebra a estrutura da tabela para empilhar os elementos */
+  .options-body .table, 
+  .options-body .table tbody, 
+  .options-body .table tr, 
+  .options-body .table td {
+    display: block; /* Faz cada célula se comportar como uma div */
+    width: 100%;    /* Ocupa toda a largura disponível */
+  }
+
+  /* Remove o espaçamento lateral e adiciona um espaçamento vertical */
+  .options-body .table td {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
 }

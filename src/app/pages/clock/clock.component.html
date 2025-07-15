@@ -157,6 +157,7 @@
     (openBackgroundOptions)="openBackgroundModal()"
     (openGameTypeOptions)="openGameTypeModal()"
     (openLogoOptions)="openLogoModal()"
+    (openAnteOptions)="openAnteModal()"
   >
   </app-options-modal>
 
@@ -181,4 +182,11 @@
     (fileSelected)="onLogoFileSelected($event)"
     (removeImage)="removerLogo()">
   </app-logo-modal>
+
+  <app-ante-modal
+    *ngIf="isAnteModalOpen"
+    (close)="isAnteModalOpen = false"
+    (save)="salvarConfiguracaoAnte($event)">
+  </app-ante-modal>
+
 </div>

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AnteConfig } from '../pages/ante-modal/ante-modal.component'; // Import a interface
+
 
 // MODIFICADO: Interface renomeada para maior clareza.
 export interface NivelDeBlind {
@@ -133,6 +135,9 @@ export class BlindService {
 
   private nivelAtual = 0;
 
+  private anteConfig: AnteConfig = { type: 'none', value: 0 }; // Padrão: sem ante
+
+
   // MODIFICADO: O BehaviorSubject agora usa a nova interface
   private blindsSubject = new BehaviorSubject<NivelDeBlind>(this.getNivelFormatado(0));
   
@@ -150,19 +155,36 @@ export class BlindService {
     }
   }
   
-  // MODIFICADO: O método agora retorna o tipo NivelDeBlind
-  // ---> MODIFICADO: A lógica da nova regra é implementada aqui.
+  // ---> MÉTODO MODIFICADO PARA CALCULAR O ANTE DINAMICAMENTE <---
   private getNivelFormatado(nivel: number): NivelDeBlind {
     const blind = this.estruturaBlinds[nivel];
-    
-    // Se o big blind for 150 ou mais, o ante é igual ao big blind.
-    // Caso contrário, o ante é nulo.
-    const anteValue = blind.bb >= 150 ? blind.bb : null;
+    //let anteValue: number | null = null;
+
+    let anteValue = blind.bb >= 200 ? blind.bb/4 : null;
+
+    // A lógica do ante só se aplica se o Big Blind for 200 ou mais
+    if (blind.bb >= 200) {
+      if (this.anteConfig.type === 'initial') {
+        anteValue = this.anteConfig.value;
+      } else if (this.anteConfig.type === 'fraction') {
+        // Arredonda para o múltiplo de 25 mais próximo para manter fichas padrão
+        const rawAnte = blind.bb / this.anteConfig.value;
+        anteValue = Math.round(rawAnte / 25) * 25;
+      }
+    }
 
     return {
       sb: blind.sb,
       bb: blind.bb,
-      ante: anteValue // Usamos o valor calculado
+      ante: anteValue
     };
+  }
+
+  // ---> NOVO MÉTODO PÚBLICO PARA ATUALIZAR A CONFIGURAÇÃO <---
+  public configurarAnte(config: AnteConfig): void {
+    this.anteConfig = config;
+    // Força a atualização do nível atual para refletir a nova regra imediatamente
+    const nivelAtualizado = this.getNivelFormatado(this.nivelAtual);
+    this.blindsSubject.next(nivelAtualizado);
   }
 }

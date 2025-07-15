@@ -9,7 +9,9 @@ import { OptionsModalComponent } from "../options-modal/options-modal.component"
 import { BackgroundModalComponent } from "../background-modal/background-modal.component";
 import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.component";
 import { BlindService, NivelDeBlind } from "../../service/blind.service";
-import { LogoModalComponent } from "../logo-modal/logo-modal.component"; // 1. Importe
+import { LogoModalComponent } from "../logo-modal/logo-modal.component";
+import { AnteModalComponent, AnteConfig } from '../ante-modal/ante-modal.component'; // 1. Importe
+
 
 
 // ---> Importamos as ferramentas do Angular CDK para detectar o tamanho da tela
@@ -26,7 +28,8 @@ import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
     OptionsModalComponent,
     BackgroundModalComponent,
     GameTypeModalComponent,
-    LogoModalComponent
+    LogoModalComponent,
+    AnteModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -36,11 +39,12 @@ export class ClockComponent implements OnInit, OnDestroy {
   public isMobile: boolean = false;
 
   // --- Propriedades de estado da aplicação ---
+   public isAnteModalOpen = false;
   public isGameTypeModalOpen = false;
   public isBackgroundModalOpen = false;
   public isOptionsModalOpen = false;
   public tempoRestante: string = "15:00";
-  private tempoInicialEmSegundos = 15 * 60; //15 * 60
+  private tempoInicialEmSegundos = 1 * 1; //15 * 60
   private timerSubscription: Subscription | undefined;
   public backgroundImageUrl: string | null = null;
   public isPlayersModalOpen = false;
@@ -241,5 +245,15 @@ export class ClockComponent implements OnInit, OnDestroy {
   public removerLogo(): void {
     localStorage.removeItem("pokerDashboardLogo");
     this.logoUrl = null;
+  }
+
+  public openAnteModal(): void {
+    this.isOptionsModalOpen = false;
+    this.isAnteModalOpen = true;
+  }
+
+  public salvarConfiguracaoAnte(config: AnteConfig): void {
+    this.blindService.configurarAnte(config);
+    this.isAnteModalOpen = false; // Fecha o modal após salvar
   }
 }

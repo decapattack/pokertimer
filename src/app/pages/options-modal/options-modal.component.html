@@ -24,7 +24,12 @@
             <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo</button></td>
           </tr>
           <tr>
-            <td><button type="button" class="btn btn-lg btn-primary w-100">Ante</button></td>
+            <td><button 
+            type="button" 
+            class="btn btn-lg btn-primary w-100"
+            (click)="openAnteOptions.emit()">
+            Ante
+          </button></td>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Menor Chip</button></td>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Start Stack</button></td>
           </tr>

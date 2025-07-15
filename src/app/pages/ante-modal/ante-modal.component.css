@@ -1,0 +1,34 @@
+/*
+  Com a estrutura correta do Bootstrap, o CSS customizado fica muito mais limpo.
+  Nós apenas sobrescrevemos as variáveis CSS do Bootstrap para criar um tema escuro para o modal.
+*/
+:host .modal-content {
+  --bs-modal-bg: #212529; /* Cor de fundo escura (bg-dark) */
+  --bs-modal-color: #e9ecef; /* Cor de texto clara (text-light) */
+  --bs-modal-border-color: #fca311; /* Borda com a cor de destaque */
+  --bs-modal-header-border-color: rgba(255, 255, 255, 0.1);
+  --bs-modal-footer-border-color: rgba(255, 255, 255, 0.1);
+}
+
+:host .modal-header .h2 {
+  font-family: 'Teko', sans-serif;
+  color: #fca311;
+}
+
+/* Deixa o botão de fechar branco para contrastar com o fundo escuro */
+:host .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Estilo para formulários escuros */
+:host .form-select, 
+:host .input-group-text {
+  background-color: #343a40;
+  color: #fff;
+  border-color: #495057;
+}
+
+:host .form-select:focus {
+  border-color: #fca311;
+  box-shadow: 0 0 0 0.25rem rgba(252, 163, 17, 0.25);
+}
