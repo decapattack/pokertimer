@@ -8,11 +8,17 @@
   --bs-modal-border-color: #fca311; /* Borda com a cor de destaque */
   --bs-modal-header-border-color: rgba(255, 255, 255, 0.1);
   --bs-modal-footer-border-color: rgba(255, 255, 255, 0.1);
+
+  /* ✅ ALTERADO: Diminui o padding do header e footer para economizar espaço vertical */
+  --bs-modal-header-padding: 0.1rem 1rem;
+  --bs-modal-footer-gap: 1rem;
 }
 
 :host .modal-header .h2 {
   font-family: 'Teko', sans-serif;
   color: #fca311;
+  /* ✅ ALTERADO: Reduz o tamanho da fonte do título */
+  font-size: 1.8rem;
 }
 
 /* Deixa o botão de fechar branco para contrastar com o fundo escuro */
@@ -21,7 +27,7 @@
 }
 
 /* Estilo para formulários escuros */
-:host .form-select, 
+:host .form-select,
 :host .input-group-text {
   background-color: #343a40;
   color: #fff;
