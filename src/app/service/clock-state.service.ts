@@ -26,7 +26,7 @@ export class ClockStateService implements OnDestroy {
   private blindsSubscription: Subscription | undefined;
 
   // Propriedade interna que guarda a duração do nível
-  private tempoInicialEmSegundos = 15 * 60;
+  private tempoInicialEmSegundos = 15 * 1;
 
   // 2. Um único BehaviorSubject para gerenciar todo o estado
   private readonly _state = new BehaviorSubject<ClockState>({

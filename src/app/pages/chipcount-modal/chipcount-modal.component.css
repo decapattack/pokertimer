@@ -1,29 +1,17 @@
-/* Estilo para o fundo escuro do modal */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.75);
-  z-index: 1040;
+/* Sobrescreve as variáveis do Bootstrap para criar um tema escuro */
+:host .modal-content {
+  --bs-modal-bg: #212529;
+  --bs-modal-color: #e9ecef;
+  --bs-modal-border-color: #ffc107; /* Usando o amarelo do seu design original */
 }
 
-/* Estilo para a caixa de conteúdo do modal */
-.modal-content {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #212529; /* Cor padrão escura do Bootstrap */
-  padding: 2rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ffc107;
-  z-index: 1050;
-  min-width: 400px; /* Largura mínima para o modal */
+/* Estilo para o ícone no topo do modal */
+.modal-icon {
+  font-size: 3rem;
+  color: #ffc107;
 }
 
-/* Estilo para o display do número de fichas no modo de exibição */
+/* Estilo para o display do número de fichas */
 .chip-display {
   font-size: 2.5rem;
   font-weight: 700;
@@ -35,28 +23,19 @@
 .edit-label {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #ffc107; /* Amarelo destaque */
+  color: #ffc107;
 }
 
 /* Ajustes no input do Bootstrap para nosso tema */
-.edit-panel .form-control {
+:host .form-control {
   background-color: #343a40;
   color: #fff;
   border-color: #495057;
 }
-.edit-panel .form-control:focus {
+
+:host .form-control:focus {
   background-color: #343a40;
   color: #fff;
   border-color: #ffc107;
   box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-}
-
-/* Estilo para o ícone no topo do modal */
-.modal-icon {
-  font-size: 3rem;  /* Tamanho grande para o ícone */
-  color: #ffc107;  /* Cor amarela de destaque */
-  width: 100%;
-
-  /* ---> ADICIONADO: Centraliza o ícone (que é tratado como texto) dentro do contêiner */
-  text-align: center;
 }
