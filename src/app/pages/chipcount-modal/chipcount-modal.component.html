@@ -29,13 +29,13 @@
               Valor a {{ mode === 'add' ? 'Adicionar' : 'Subtrair' }}
             </label>
             <div class="input-group input-group-lg mb-3">
-              <input 
-                type="number"
-                class="form-control text-center"
-                [(ngModel)]="valorDaOperacao"
-                (keydown.enter)="confirmarOperacao()"
-                placeholder="0"
-                autofocus>
+             <input 
+              type="number"
+              class="form-control text-center"
+              [(ngModel)]="valorDaOperacao"
+              (keydown.enter)="confirmarOperacao()"
+              placeholder="0"
+              autocomplete="off">
             </div>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
               <button class="btn btn-secondary" (click)="cancelarOperacao()">Cancelar</button>

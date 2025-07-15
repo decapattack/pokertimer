@@ -1,52 +1,20 @@
-/* Estilo para o fundo escuro que fica atrás do modal */
-.modal-backdrop {
-  position: fixed; /* Posição fixa para cobrir toda a tela */
-  top: 0;
-  left: 0;
-  width: 100vw; /* 100% da largura da tela */
-  height: 100vh; /* 100% da altura da tela */
-  background-color: rgba(0, 0, 0, 0.7); /* Cor preta com 70% de opacidade */
-  z-index: 999; /* Garante que o fundo fique acima de outros conteúdos */
-}
-
-/* Estilo para a caixa de conteúdo do modal */
-.modal-content {
-  position: fixed; /* Posição fixa no centro da tela */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Centraliza o elemento precisamente */
-  background-color: #2c2c2c; /* Cor de fundo escura */
-  color: white; /* Cor do texto */
-  padding: 30px 40px;
-  border-radius: 12px;
-  border: 1px solid #ffc107; /* Borda amarela, combinando com seu layout */
-  z-index: 1000; /* Garante que o modal fique acima do fundo */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px; /* Espaço entre o ícone e o painel de controles */
+/* Sobrescreve as variáveis do Bootstrap para criar um tema escuro */
+:host .modal-content {
+  --bs-modal-bg: #212529;
+  --bs-modal-color: #e9ecef;
+  --bs-modal-border-color: #ffc107;
 }
 
 /* Estilo para o ícone no topo do modal */
 .modal-icon {
-  font-size: 3rem; /* Tamanho grande para o ícone */
-  color: #ffc107; /* Cor amarela */
+  font-size: 3rem;
+  color: #ffc107;
 }
 
-/* Contêiner para os controles (+, -, números) */
-.controls-panel {
-  display: flex;
-  align-items: center;
-  gap: 25px; /* Espaço entre os botões e o texto */
-}
-
-/* Estilo para os números "9 de 66" */
+/* Estilo para os números "9 de 100" */
 .players-display {
   font-size: 1.8rem;
   font-weight: bold;
-  min-width: 150px; /* Largura mínima para evitar que o layout "pule" */
+  min-width: 150px;
   text-align: center;
 }
-
-/* Estilo para os botões de controle '-' e '+' */
-

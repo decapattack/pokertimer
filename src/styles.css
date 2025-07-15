@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+/* Adicione estas regras ao seu styles.css global */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
