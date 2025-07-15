@@ -256,4 +256,11 @@ export class ClockComponent implements OnInit, OnDestroy {
     this.blindService.configurarAnte(config);
     this.isAnteModalOpen = false; // Fecha o modal após salvar
   }
+
+  public get mediaDeFichas(): number {
+    if (this.jogadoresAtuais > 0) {
+      return this.chipcount / this.jogadoresAtuais;
+    }
+    return 0;
+  }
 }
