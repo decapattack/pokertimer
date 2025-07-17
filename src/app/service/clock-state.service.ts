@@ -103,7 +103,7 @@ export class ClockStateService implements OnDestroy {
     this._isPaused.next(false);
     this.tempoDeJogoEmSegundos = 0;
     this.nivelAtual = 1;
-    //this.blindService.resetarNiveis(); // reseta blinds
+    this.blindService.resetarNiveis(); // reseta blinds
     this.iniciarTimer(this.tempoInicialEmSegundos);
   }
 

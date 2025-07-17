@@ -187,4 +187,16 @@ export class BlindService {
     const nivelAtualizado = this.getNivelFormatado(this.nivelAtual);
     this.blindsSubject.next(nivelAtualizado);
   }
+
+  // --- NOVO MÉTODO IMPLEMENTADO ---
+  public resetarNiveis(): void {
+    // 1. Reseta o índice interno para o início da estrutura.
+    this.nivelAtual = 0;
+
+    // 2. Calcula o estado do primeiro nível (incluindo o ante) usando a lógica existente.
+    const primeiroNivel = this.getNivelFormatado(this.nivelAtual);
+
+    // 3. Emite o primeiro nível para todos os componentes e serviços que estão inscritos.
+    this.blindsSubject.next(primeiroNivel);
+  }
 }
