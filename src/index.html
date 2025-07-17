@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <title>PokerTimer</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +16,126 @@
 </head>
 <body>
   <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <!--<noscript>Please enable JavaScript to continue using this application.</noscript>-->
+  <script>
+    // Fullscreen para PWA
+    class PWAFullscreen {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        // Detecta se é PWA instalado
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          this.enableFullscreen();
+        }
+
+        // Escuta mudanças de orientação
+        window.addEventListener('orientationchange', () => {
+          setTimeout(() => {
+            this.adjustForOrientation();
+          }, 100);
+        });
+
+        // Escuta evento de resize
+        window.addEventListener('resize', () => {
+          this.adjustForOrientation();
+        });
+
+        // Tenta esconder a barra de navegação no Android
+        this.hideNavigationBar();
+      }
+
+      enableFullscreen() {
+        document.documentElement.style.height = '100vh';
+        document.documentElement.style.width = '100vw';
+        document.body.style.height = '100vh';
+        document.body.style.width = '100vw';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+        document.body.style.overflow = 'hidden';
+        
+        // Força o viewport
+        this.setViewport();
+      }
+
+      hideNavigationBar() {
+        // Para Android - tenta esconder a barra de navegação
+        if (navigator.userAgent.includes('Android')) {
+          // Método 1: Usando requestFullscreen (se disponível)
+          if (document.documentElement.requestFullscreen) {
+            document.addEventListener('click', () => {
+              if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                  console.log('Fullscreen error:', err);
+                });
+              }
+            }, { once: true });
+          }
+
+          // Método 2: Forçar scroll para esconder a barra
+          window.scrollTo(0, 1);
+          
+          // Método 3: Usar propriedades específicas do Android
+          if (window.screen && window.screen.orientation) {
+            try {
+              window.screen.orientation.lock('landscape');
+            } catch (e) {
+              console.log('Orientation lock not supported');
+            }
+          }
+        }
+      }
+
+      setViewport() {
+        let viewport = document.querySelector('meta[name="viewport"]');
+        if (!viewport) {
+          viewport = document.createElement('meta');
+          viewport.name = 'viewport';
+          document.head.appendChild(viewport);
+        }
+        
+        viewport.content = 'width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover, minimal-ui';
+      }
+
+      adjustForOrientation() {
+        // Ajusta a tela após mudança de orientação
+        setTimeout(() => {
+          document.body.style.height = window.innerHeight + 'px';
+          document.body.style.width = window.innerWidth + 'px';
+          
+          // Força reflow
+          document.body.offsetHeight;
+          
+          // Scroll para garantir que a barra suma
+          window.scrollTo(0, 1);
+        }, 300);
+      }
+    }
+
+    // Inicia quando o DOM estiver pronto
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        new PWAFullscreen();
+      });
+    } else {
+      new PWAFullscreen();
+    }
+
+    // Método alternativo para esconder a barra de navegação
+    function hideAddressBar() {
+      if (window.orientation !== undefined) {
+        setTimeout(() => {
+          window.scrollTo(0, 1);
+        }, 100);
+      }
+    }
+
+    // Executa quando a página carrega
+    window.addEventListener('load', hideAddressBar);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(hideAddressBar, 100);
+    });
+  </script>
 </body>
 </html>

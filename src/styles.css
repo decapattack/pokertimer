@@ -7,3 +7,106 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Estilos para PWA Fullscreen */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+  
+  /* Para dispositivos com notch/safe area */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Específico para PWA instalado */
+@media (display-mode: standalone) {
+  body {
+    /* Remove qualquer padding/margin quando em modo standalone */
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    
+    /* Força ocupar toda a tela */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  
+  .poker-dashboard-wrapper {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    /* Garante que ocupe toda a tela */
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+}
+
+/* Para Android - esconde a barra de navegação */
+@media (orientation: landscape) and (display-mode: standalone) {
+  html {
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  body {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    overflow: hidden;
+  }
+  
+  .poker-dashboard-wrapper {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+}
+
+/* Estilos específicos para mobile em landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-layout {
+    padding: 0.5rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .mobile-header {
+    margin-bottom: 1rem;
+  }
+  
+  .main-timer {
+    font-size: 4rem !important; /* Reduzido para landscape */
+  }
+  
+  .info-panel-mobile {
+    padding: 0.5rem;
+  }
+  
+  .info-panel-mobile .label {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .info-panel-mobile .value {
+    font-size: 1.5rem;
+  }
+}

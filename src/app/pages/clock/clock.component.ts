@@ -62,6 +62,9 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   }
 
   ngOnInit(): void {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      this.enableFullscreen();
+    }
     this.clockStateService.init();
   }
 
@@ -131,5 +134,17 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
     if (!base64) return null;
     const urlSegura = this.sanitizer.bypassSecurityTrustUrl(base64);
     return `url(${this.sanitizer.sanitize(SecurityContext.URL, urlSegura)})`;
+  }
+
+  private enableFullscreen() {
+    document.body.style.height = '100vh';
+    document.body.style.overflow = 'hidden';
+    
+    // Esconde a barra de navegação no Android
+    if (navigator.userAgent.includes('Android')) {
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+      }, 100);
+    }
   }
 }
