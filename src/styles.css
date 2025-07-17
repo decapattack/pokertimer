@@ -110,3 +110,10 @@ html, body {
     font-size: 1.5rem;
   }
 }
+
+body, html {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: none;
+  touch-action: manipulation;
+}

@@ -28,6 +28,12 @@ export class ClockStateService implements OnDestroy {
   // Propriedade interna que guarda a duração do nível
   private tempoInicialEmSegundos = 15 * 1;
 
+  //  --- NOVAS PROPRIEDADES PARA CONTROLE DO TIMER ---
+  private tempoRestanteAoPausar: number = 0;
+  private readonly _isPaused = new BehaviorSubject<boolean>(false);
+  public readonly isPaused$ = this._isPaused.asObservable();
+  // --- FIM DAS NOVAS PROPRIEDADES ---
+
   // 2. Um único BehaviorSubject para gerenciar todo o estado
   private readonly _state = new BehaviorSubject<ClockState>({
     tempoRestante: '00:00',
@@ -121,6 +127,7 @@ export class ClockStateService implements OnDestroy {
 
   private iniciarTimer(duracaoEmSegundos: number): void {
     this.timerSubscription?.unsubscribe();
+    this._isPaused.next(false); // Garante que o estado de pausa seja resetado ao iniciar
     this.timerSubscription = interval(1000)
       .pipe(
         take(duracaoEmSegundos),
@@ -128,6 +135,7 @@ export class ClockStateService implements OnDestroy {
       )
       .subscribe({
         next: (segundosRestantes) => {
+          this.tempoRestanteAoPausar = segundosRestantes; //Salva o tempo restante a cada segundo
           this._updateState({ tempoRestante: this._formatarTempo(segundosRestantes) });
         },
         complete: () => {
@@ -161,4 +169,24 @@ export class ClockStateService implements OnDestroy {
 
     this._state.next(updatedState);
   }
+
+  // --- NOVOS MÉTODOS PÚBLICOS PARA CONTROLE DO TIMER ---
+
+  public pausarTimer(): void {
+    if (this._isPaused.value) return; // Já está pausado
+    this.timerSubscription?.unsubscribe();
+    this._isPaused.next(true);
+  }
+
+  public retomarTimer(): void {
+    if (!this._isPaused.value) return; // Não está pausado
+    this._isPaused.next(false);
+    this.iniciarTimer(this.tempoRestanteAoPausar);
+  }
+
+  public resetarTimer(): void {
+    this._isPaused.next(false);
+    this.iniciarTimer(this.tempoInicialEmSegundos);
+  }
+  // --- FIM DOS NOVOS MÉTODOS ---
 }

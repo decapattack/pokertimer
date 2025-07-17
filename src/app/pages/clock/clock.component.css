@@ -1,17 +1,52 @@
 /* --- Estilos Gerais (para PC) --- */
-.poker-dashboard-wrapper { color: #e0e1dd; font-family: 'Teko', sans-serif; background-size: cover; background-position: center; position: relative; min-height: 100vh; padding: 1rem; }
+
+/* ✅ ALTERAÇÃO: Removido min-height e adicionado display: flex para controlar o layout verticalmente e remover o scroll. */
+.poker-dashboard-wrapper { 
+  color: #e0e1dd; 
+  font-family: 'Teko', sans-serif; 
+  background-size: cover; 
+  background-position: center; 
+  position: relative; 
+  height: 100vh; /* Altura estrita da tela */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Garante que nada escape e crie scroll */
+   -webkit-user-select: none; /* Safari, Chrome, Opera */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Padrão */
+}
+
+/* ✅ NOVO: Força o container-fluid a se expandir para preencher o espaço do wrapper */
+.poker-dashboard-wrapper > .container-fluid {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0; /* Correção para flexbox em alguns navegadores */
+   -webkit-user-select: none; /* Safari, Chrome, Opera */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Padrão */
+}
+
+/* ✅ NOVO: Faz a linha principal do conteúdo (info-panels + timer) crescer para ocupar o espaço vago */
+.poker-dashboard-wrapper .row.align-items-stretch {
+  flex-grow: 1;
+}
+
 .poker-dashboard-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(13, 27, 42, 0.8); z-index: 0; }
-.poker-dashboard-wrapper .container-fluid { position: relative; z-index: 1; }
+.poker-dashboard-wrapper .container-fluid > * { position: relative; z-index: 1; } /* Ajuste para o z-index funcionar nos filhos */
 .text-highlight { color: #fca311; }
 .main-title { font-size: 2rem; font-weight: 700; color: #fff; }
 .online-id { font-size: 1.5rem; font-weight: 500; }
-.info-panel { background-color: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; height: 100%; }
+.info-panel { background-color: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; height: 100%; display: flex; flex-direction: column; justify-content: center; /* Centraliza o conteúdo verticalmente */ }
 .info-panel .label { font-size: 1.2rem; font-weight: 500; color: #778da9; text-transform: uppercase; }
 .info-panel .label .fa-solid { margin-right: 8px; }
 .info-panel .value { font-size: 2.2rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; }
 .info-panel .label.text-highlight { font-size: 1.8rem; font-weight: 700; }
 .main-timer { font-size: 10rem; font-weight: 700; line-height: 1; text-shadow: 0 0 15px rgba(252, 163, 17, 0.7); }
-.blinds-banner { background-color: rgba(0, 0, 0, 0.5); padding: 1rem; border-radius: 10px; }
+.blinds-banner { background-color: rgba(0, 0, 0, 0.5); padding: 0rem; border-radius: 10px; }
 .blinds-label { font-size: 1.5rem; color: #778da9; }
 .blinds-values { font-size: 2.8rem; font-weight: 700; }
 .ante-value { color: #fca311; }
@@ -20,95 +55,33 @@
 .clickable { cursor: pointer; border-radius: 5px; }
 .clickable:hover { background-color: rgba(255, 255, 255, 0.1); }
 
-/* ---> NOVOS ESTILOS APENAS PARA O LAYOUT MOBILE <--- */
-.mobile-hide {
-  display: none;
-}
-
+/* ---> ESTILOS PARA O LAYOUT MOBILE <--- */
 .mobile-layout {
-  padding-top: 1rem;
+  margin-top: -1rem;
   padding-bottom: 1rem;
 }
 
-.mobile-layout .main-timer {
-  font-size: 5rem; /* Levemente reduzido para dar espaço */
-  margin: 0;
-  line-height: 1;
+/* ✅ ALTERAÇÃO: Ajusta a linha principal do mobile para usar o espaço disponível */
+.mobile-layout .row:not(.mobile-header) {
+  flex-grow: 1;
 }
 
-.mobile-layout .blinds-banner-mobile {
-  text-align: center;
-  margin-top: 0.5rem;
-  padding: 0.25rem;
-  background-color: rgba(0,0,0,0.3);
-  border-radius: 0.25rem;
-  width: 100%;
-}
+.mobile-layout .main-timer { font-size: 5rem; margin: 0; line-height: 1; }
+.mobile-layout .blinds-banner-mobile { text-align: center; margin-top: 0.5rem; padding: 0.25rem; background-color: rgba(0,0,0,0.3); border-radius: 0.25rem; width: 100%; }
+.mobile-layout .blinds-banner-mobile .blinds-label { font-size: 1.1rem; }
+.mobile-layout .blinds-banner-mobile .blinds-values { font-size: 2rem; }
+.mobile-layout .blinds-banner-mobile .ante-value { font-size: 1.7rem; }
+.info-panel-mobile { flex: 1; background-color: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 0.5rem; text-align: center; display: flex; flex-direction: column; height: 100%; }
+.mobile-layout .info-panel-mobile .label { font-size: 1rem; color: #778da9; margin-top: 0.75rem; font-weight: 700; }
+.mobile-layout .info-panel-mobile .label .fa-solid { margin-right: 5px; font-size: 0.9rem; }
+.mobile-layout .info-panel-mobile .value { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1.2; }
+.mobile-layout .info-panel-mobile .label.text-highlight { font-size: 1.4rem; color: #fca311; margin-top: 0; }
+.main-logo-img { max-height: 45px; width: auto; max-width: 100%; }
+.main-logo-img-mobile { max-height: 35px; width: auto; max-width: 100%; }
 
-.mobile-layout .blinds-banner-mobile .blinds-label {
-  font-size: 1.1rem; /* Aumentado */
-}
-
-.mobile-layout .blinds-banner-mobile .blinds-values {
-  font-size: 2rem; /* Aumentado */
-}
-
-.mobile-layout .blinds-banner-mobile .ante-value {
-  font-size: 1.7rem; /* Aumentado */
-}
-
-.mobile-layout .info-grid-mobile {
-  display: flex;
-  width: 100%;
-  margin-top: 1.5rem;
-}
-
-.info-panel-mobile {
-  flex: 1;
-  background-color: rgba(0,0,0,0.3);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  display: flex; /* Adicionado para controle interno */
-  flex-direction: column; /* Adicionado para controle interno */
-  height: 100%; /* ---> ESSENCIAL: Faz o fundo ocupar toda a altura da coluna. */
-}
-
-.mobile-layout .info-panel-mobile .label {
-  font-size: 1rem; /* Aumentado */
-  color: #778da9;
-  margin-top: 0.75rem;
-  font-weight: 700;
-}
-
-.mobile-layout .info-panel-mobile .label .fa-solid {
-  margin-right: 5px;
-  font-size: 0.9rem; /* Aumentado */
-}
-
-.mobile-layout .info-panel-mobile .value {
-  font-size: 1.8rem; /* Aumentado */
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.mobile-layout .info-panel-mobile .label.text-highlight {
-  font-size: 1.4rem; /* Aumentado */
-  color: #fca311;
-  margin-top: 0;
-}
-
-/* Estilo para a logo no layout de Desktop */
-.main-logo-img {
-  max-height: 45px; /* Define uma altura máxima */
-  width: auto;      /* Mantém a proporção */
-  max-width: 100%;  /* Garante que não ultrapasse a largura do container */
-}
-
-/* Estilo para a logo no layout Mobile */
-.main-logo-img-mobile {
-  max-height: 35px;
-  width: auto;
-  max-width: 100%;
+.non-selectable-text {
+  -webkit-user-select: none; /* Safari, Chrome, Opera */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Sintaxe padrão */
 }

@@ -4,7 +4,7 @@
     [style.backgroundImage]="getSanitizedBackground(state.backgroundBase64)">
 
     <div *ngIf="!(isMobile$ | async)" class="container-fluid">
-      <div class="row text-center align-items-center py-2">
+      <div class="row text-center align-items-center py-1">
         <div class="col-md-7 text-md-start">
           <img *ngIf="state.logoBase64" [src]="getSanitizedLogo(state.logoBase64)" class="main-logo-img" alt="Logo do Torneio">
           <h1 *ngIf="!state.logoBase64" class="main-title">MONSTER UNIVERSITÁRIO 10K</h1>
@@ -21,7 +21,7 @@
           </button>
         </div>
       </div>
-      <div class="row text-center align-items-stretch my-3">
+      <div class="row text-center align-items-stretch my-2">
         <div class="col-md-3">
           <div class="info-panel">
             <div class="label text-highlight">
@@ -41,7 +41,9 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div class="main-timer text-highlight">{{ state.tempoRestante }}</div>
+          <div class="main-timer text-highlight clickable" (click)="openTimerControlModal()">
+            {{ state.tempoRestante }}
+          </div>
         </div>
         <div class="col-md-3">
           <div class="info-panel">
@@ -62,7 +64,7 @@
           </div>
         </div>
       </div>
-      <div class="row text-center my-3">
+      <div class="row text-center my-2">
         <div class="col-12">
           <div class="blinds-banner">
             <div class="blinds-label">Blinds-Ante</div>
@@ -76,7 +78,7 @@
     </div>
 
     <div *ngIf="isMobile$ | async" class="container-fluid mobile-layout">
-      <div class="row mobile-header align-items-center mb-3">
+      <div class="row mobile-header align-items-center mb-2">
         <div class="col">
           <img *ngIf="state.logoBase64" [src]="getSanitizedLogo(state.logoBase64)" class="main-logo-img-mobile" alt="Logo do Torneio">
         </div>
@@ -107,7 +109,9 @@
           </div>
         </div>
         <div class="col-4 d-flex flex-column align-items-center">
-          <div class="main-timer text-highlight">{{ state.tempoRestante }}</div>
+          <div class="main-timer text-highlight clickable" (click)="openTimerControlModal()">
+            {{ state.tempoRestante }}
+          </div>
           <div class="blinds-banner-mobile">
             <div class="blinds-label">Blinds-Ante</div>
             <div class="blinds-values">
@@ -196,6 +200,16 @@
       (close)="isAnteModalOpen = false"
       (save)="salvarConfiguracaoAnte($event)">
     </app-ante-modal>
+
+    <app-timer-control-modal
+      *ngIf="isTimerControlModalOpen"
+      [tempo]="state.tempoRestante"
+      [isPaused]="isPaused$ | async"
+      (close)="isTimerControlModalOpen = false"
+      (pause)="onTimerPause()"
+      (resume)="onTimerResume()"
+      (stop)="onTimerStop()">
+    </app-timer-control-modal>
 
   </div>
 </ng-container>

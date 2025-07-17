@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, SecurityContext } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { Observable, map } from 'rxjs'; // ✅ Importa o 'map' aqui
-import { BreakpointObserver, Breakpoints, BreakpointState } from "@angular/cdk/layout"; // ✅ Importa o 'BreakpointState' aqui
+import { Observable, map } from 'rxjs'; //Importa o 'map' aqui
+import { BreakpointObserver, Breakpoints, BreakpointState } from "@angular/cdk/layout"; //Importa o 'BreakpointState' aqui
 
 // Componentes de Modal
 import { JogadoresModalComponent } from "../jogadores-modal/jogadores-modal.component";
@@ -13,6 +13,7 @@ import { BackgroundModalComponent } from "../background-modal/background-modal.c
 import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.component";
 import { LogoModalComponent } from "../logo-modal/logo-modal.component";
 import { AnteModalComponent, AnteConfig } from '../ante-modal/ante-modal.component';
+import { TimerControlModalComponent } from '../timer-control-modal/timer-control-modal.component'; //NOVO IMPORT
 
 // O Serviço de Estado
 import { ClockState, ClockStateService } from "../../service/clock-state.service";
@@ -29,7 +30,8 @@ import { ClockState, ClockStateService } from "../../service/clock-state.service
     BackgroundModalComponent,
     GameTypeModalComponent,
     LogoModalComponent,
-    AnteModalComponent
+    AnteModalComponent,
+    TimerControlModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -37,6 +39,7 @@ import { ClockState, ClockStateService } from "../../service/clock-state.service
 export class ClockComponent implements OnInit { // Removido OnDestroy, pois não é mais necessário
   public isMobile$: Observable<boolean>;
   public state$: Observable<ClockState>;
+  public isPaused$: Observable<boolean>;
 
   // Flags para controlar a visibilidade dos modais
   public isOptionsModalOpen = false;
@@ -46,6 +49,7 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   public isGameTypeModalOpen = false;
   public isLogoModalOpen = false;
   public isAnteModalOpen = false;
+  public isTimerControlModalOpen = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -53,6 +57,7 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
     private breakpointObserver: BreakpointObserver
   ) {
     this.state$ = this.clockStateService.state$;
+    this.isPaused$ = this.clockStateService.isPaused$;
 
     // ✅ LINHA CORRIGIDA ✅
     // Adicionamos o tipo 'BreakpointState' ao parâmetro 'result'.
@@ -147,4 +152,23 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
       }, 100);
     }
   }
+  // --- MÉTODOS DE UI ---
+  // --- NOVOS MÉTODOS PARA O MODAL DE CONTROLE ---
+  public openTimerControlModal(): void {
+    this.isTimerControlModalOpen = true;
+  }
+
+  public onTimerPause(): void {
+    this.clockStateService.pausarTimer();
+  }
+
+  public onTimerResume(): void {
+    this.clockStateService.retomarTimer();
+    // O modal já se fecha sozinho, conforme programado no componente dele
+  }
+
+  public onTimerStop(): void {
+    this.clockStateService.resetarTimer();
+  }
+  // --- FIM DOS NOVOS MÉTODOS ---
 }
