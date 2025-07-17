@@ -16,6 +16,7 @@ export interface ClockState {
   ante: number | null;
   logoBase64: string | null;
   backgroundBase64: string | null;
+  nivel: number;
 }
 
 @Injectable({
@@ -26,6 +27,8 @@ export class ClockStateService implements OnDestroy {
   private blindsSubscription: Subscription | undefined;
 
   private tempoInicialEmSegundos = 15 * 1;
+
+  private nivelAtual = 1;
   
   // Propriedades para controle do timer
   private tempoRestanteAoPausar: number = 0;
@@ -48,6 +51,7 @@ export class ClockStateService implements OnDestroy {
     ante: null,
     logoBase64: null,
     backgroundBase64: null,
+    nivel: 1
   });
 
   // O Observable público que os componentes consomem
@@ -98,6 +102,8 @@ export class ClockStateService implements OnDestroy {
   public resetarTimer(): void {
     this._isPaused.next(false);
     this.tempoDeJogoEmSegundos = 0;
+    this.nivelAtual = 1;
+    //this.blindService.resetarNiveis(); // reseta blinds
     this.iniciarTimer(this.tempoInicialEmSegundos);
   }
 
@@ -168,6 +174,7 @@ export class ClockStateService implements OnDestroy {
         },
         complete: () => {
           this.blindService.avancarNivel();
+          this.nivelAtual++;
           this.iniciarTimer(this.tempoInicialEmSegundos);
         },
       });
@@ -195,7 +202,7 @@ export class ClockStateService implements OnDestroy {
 
   private _updateState(newState: Partial<ClockState>): void {
     const currentState = this._state.value;
-    const updatedState = { ...currentState, ...newState };
+    const updatedState = { ...currentState, ...newState, nivel: this.nivelAtual };
 
     updatedState.mediaDeFichas = updatedState.jogadoresAtuais > 0
       ? updatedState.chipcount / updatedState.jogadoresAtuais

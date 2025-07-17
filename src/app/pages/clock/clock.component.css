@@ -44,7 +44,7 @@
 .info-panel .label { font-size: 1.2rem; font-weight: 500; color: #778da9; text-transform: uppercase; }
 .info-panel .label .fa-solid { margin-right: 8px; }
 .info-panel .value { font-size: 2.2rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; }
-.info-panel .label.text-highlight { font-size: 1.8rem; font-weight: 700; }
+.info-panel .label.text-highlight { font-size: 1.8rem; font-weight: 700; color: #fca311;}
 .main-timer { font-size: 10rem; font-weight: 700; line-height: 1; text-shadow: 0 0 15px rgba(252, 163, 17, 0.7); }
 .blinds-banner { background-color: rgba(0, 0, 0, 0.5); padding: 0rem; border-radius: 10px; }
 .blinds-label { font-size: 1.5rem; color: #778da9; }
