@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-// A importação do 'map' está aqui, vinda diretamente do 'rxjs'
 import { BehaviorSubject, Subscription, interval, map, take } from 'rxjs';
 import { BlindService, NivelDeBlind } from './blind.service';
 import { AnteConfig } from '../pages/ante-modal/ante-modal.component';
 
-// 1. Interface que define a forma do nosso estado
+// A Interface que define a forma do nosso estado
 export interface ClockState {
   tempoRestante: string;
+  tempoDeJogo: string;
   jogadoresAtuais: number;
   jogadoresTotais: number;
   chipcount: number;
@@ -25,18 +25,20 @@ export class ClockStateService implements OnDestroy {
   private timerSubscription: Subscription | undefined;
   private blindsSubscription: Subscription | undefined;
 
-  // Propriedade interna que guarda a duração do nível
   private tempoInicialEmSegundos = 15 * 1;
-
-  //  --- NOVAS PROPRIEDADES PARA CONTROLE DO TIMER ---
+  
+  // Propriedades para controle do timer
   private tempoRestanteAoPausar: number = 0;
   private readonly _isPaused = new BehaviorSubject<boolean>(false);
   public readonly isPaused$ = this._isPaused.asObservable();
-  // --- FIM DAS NOVAS PROPRIEDADES ---
-
-  // 2. Um único BehaviorSubject para gerenciar todo o estado
+  
+  // Propriedade para o tempo de jogo progressivo
+  private tempoDeJogoEmSegundos = 0;
+  
+  // O estado inicial da aplicação
   private readonly _state = new BehaviorSubject<ClockState>({
     tempoRestante: '00:00',
+    tempoDeJogo: '00:00:00',
     jogadoresAtuais: 9,
     jogadoresTotais: 100,
     chipcount: 0,
@@ -48,12 +50,11 @@ export class ClockStateService implements OnDestroy {
     backgroundBase64: null,
   });
 
-  // 3. Um observable público para os componentes se inscreverem
+  // O Observable público que os componentes consomem
   public readonly state$ = this._state.asObservable();
 
   constructor(private blindService: BlindService) {}
 
-  // 4. Método de inicialização para ser chamado pelo componente principal
   public init(): void {
     const initialState = {
       ...this._state.value,
@@ -80,11 +81,31 @@ export class ClockStateService implements OnDestroy {
     this.blindsSubscription?.unsubscribe();
   }
 
-  // --- MÉTODOS PÚBLICOS (A API do nosso serviço) ---
+  // --- MÉTODOS PÚBLICOS PARA CONTROLE DO TIMER ---
+
+  public pausarTimer(): void {
+    if (this._isPaused.value) return;
+    this.timerSubscription?.unsubscribe();
+    this._isPaused.next(true);
+  }
+
+  public retomarTimer(): void {
+    if (!this._isPaused.value) return;
+    this._isPaused.next(false);
+    this.iniciarTimer(this.tempoRestanteAoPausar);
+  }
+
+  public resetarTimer(): void {
+    this._isPaused.next(false);
+    this.tempoDeJogoEmSegundos = 0;
+    this.iniciarTimer(this.tempoInicialEmSegundos);
+  }
+
+  // --- OUTROS MÉTODOS PÚBLICOS (API do Serviço) ---
 
   public definirTempoDeJogo(segundos: number): void {
     this.tempoInicialEmSegundos = segundos;
-    this.iniciarTimer(segundos);
+    this.resetarTimer(); // Reseta para aplicar o novo tempo
   }
 
   public salvarConfiguracaoAnte(config: AnteConfig): void {
@@ -123,20 +144,27 @@ export class ClockStateService implements OnDestroy {
     this._updateState({ backgroundBase64: null });
   }
 
-  // --- MÉTODOS PRIVADOS (Lógica interna) ---
+  // --- MÉTODOS PRIVADOS (Lógica Interna) ---
 
   private iniciarTimer(duracaoEmSegundos: number): void {
     this.timerSubscription?.unsubscribe();
-    this._isPaused.next(false); // Garante que o estado de pausa seja resetado ao iniciar
+    this._isPaused.next(false);
     this.timerSubscription = interval(1000)
       .pipe(
-        take(duracaoEmSegundos),
-        map((tick) => duracaoEmSegundos - (tick + 1))
+        take(duracaoEmSegundos + 1),
+        map((tick) => duracaoEmSegundos - tick)
       )
       .subscribe({
         next: (segundosRestantes) => {
-          this.tempoRestanteAoPausar = segundosRestantes; //Salva o tempo restante a cada segundo
-          this._updateState({ tempoRestante: this._formatarTempo(segundosRestantes) });
+          this.tempoRestanteAoPausar = segundosRestantes;
+          if (segundosRestantes < duracaoEmSegundos) { // Não incrementa no primeiro segundo
+             this.tempoDeJogoEmSegundos++;
+          }
+          
+          this._updateState({
+            tempoRestante: this._formatarTempo(segundosRestantes),
+            tempoDeJogo: this._formatarTempoDeJogo(this.tempoDeJogoEmSegundos)
+          });
         },
         complete: () => {
           this.blindService.avancarNivel();
@@ -150,6 +178,14 @@ export class ClockStateService implements OnDestroy {
     const segundos = totalSegundos % 60;
     return `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
   }
+  
+  private _formatarTempoDeJogo(totalSegundos: number): string {
+    const horas = Math.floor(totalSegundos / 3600);
+    const minutos = Math.floor((totalSegundos % 3600) / 60);
+    const segundos = totalSegundos % 60;
+
+    return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+  }
 
   private _handleFile(file: File, callback: (result: string) => void): void {
     const reader = new FileReader();
@@ -157,36 +193,14 @@ export class ClockStateService implements OnDestroy {
     reader.readAsDataURL(file);
   }
 
-  // 5. Método central para atualizar o estado e calcular a média
   private _updateState(newState: Partial<ClockState>): void {
     const currentState = this._state.value;
     const updatedState = { ...currentState, ...newState };
 
-    // Recalcula a média sempre que o estado é atualizado
     updatedState.mediaDeFichas = updatedState.jogadoresAtuais > 0
       ? updatedState.chipcount / updatedState.jogadoresAtuais
       : 0;
 
     this._state.next(updatedState);
   }
-
-  // --- NOVOS MÉTODOS PÚBLICOS PARA CONTROLE DO TIMER ---
-
-  public pausarTimer(): void {
-    if (this._isPaused.value) return; // Já está pausado
-    this.timerSubscription?.unsubscribe();
-    this._isPaused.next(true);
-  }
-
-  public retomarTimer(): void {
-    if (!this._isPaused.value) return; // Não está pausado
-    this._isPaused.next(false);
-    this.iniciarTimer(this.tempoRestanteAoPausar);
-  }
-
-  public resetarTimer(): void {
-    this._isPaused.next(false);
-    this.iniciarTimer(this.tempoInicialEmSegundos);
-  }
-  // --- FIM DOS NOVOS MÉTODOS ---
 }
