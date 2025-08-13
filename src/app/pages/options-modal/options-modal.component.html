@@ -1,6 +1,6 @@
 <div class="options-overlay" (click)="onClose()">
   <div class="options-content" (click)="$event.stopPropagation()">
-    
+
     <div class="options-header">
       <h1>Opções</h1>
       <button class="btn-close-options" (click)="onClose()" title="Fechar">
@@ -13,19 +13,24 @@
         <tbody>
           <tr>
             <td>
-              <button 
-                type="button" 
-                class="btn btn-lg btn-primary w-100" 
+              <button
+                type="button"
+                class="btn btn-lg btn-primary w-100"
                 (click)="openGameTypeOptions.emit()">
                 Tipo de jogo
               </button>
             </td>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Tempo total</button></td>
-            <td><button type="button" class="btn btn-lg btn-primary w-100">Tipo</button></td>
+            <td><button
+                type="button"
+                class="btn btn-lg btn-primary w-100"
+                (click)="openTotalPlayersOptions.emit()">
+                Nº Players
+              </button></td>
           </tr>
           <tr>
-            <td><button 
-            type="button" 
+            <td><button
+            type="button"
             class="btn btn-lg btn-primary w-100"
             (click)="openAnteOptions.emit()">
             Ante
@@ -36,17 +41,17 @@
           <tr>
             <td><button type="button" class="btn btn-lg btn-primary w-100">Botao 1</button></td>
             <td>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="btn btn-lg btn-primary w-100"
                 (click)="openLogoOptions.emit()">
                 Logo
               </button>
             </td>
             <td>
-              <button 
-                type="button" 
-                class="btn btn-lg btn-primary w-100" 
+              <button
+                type="button"
+                class="btn btn-lg btn-primary w-100"
                 (click)="openBackgroundOptions.emit()">
                 Background
               </button>

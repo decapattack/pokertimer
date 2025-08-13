@@ -18,6 +18,7 @@ export class OptionsModalComponent {
   @Output() openGameTypeOptions = new EventEmitter<void>();
   @Output() openLogoOptions = new EventEmitter<void>();
   @Output() openAnteOptions = new EventEmitter<void>();
+  @Output() openTotalPlayersOptions = new EventEmitter<void>();
 
   onClose(): void {
     this.close.emit();

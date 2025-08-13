@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-5 text-md-end">
           <h2 class="online-id">
-           
+
           </h2>
           <button
             class="btn btn-outline-light btn-sm"
@@ -172,7 +172,8 @@
       (openBackgroundOptions)="openBackgroundModal()"
       (openGameTypeOptions)="openGameTypeModal()"
       (openLogoOptions)="openLogoModal()"
-      (openAnteOptions)="openAnteModal()">
+      (openAnteOptions)="openAnteModal()"
+      (openTotalPlayersOptions)="openTotalPlayersModal()">
     </app-options-modal>
 
     <app-background-modal
@@ -210,6 +211,13 @@
       (resume)="onTimerResume()"
       (stop)="onTimerStop()">
     </app-timer-control-modal>
+
+    <app-total-players-modal
+      *ngIf="isTotalPlayersModalOpen"
+      [valorAtual]="state.jogadoresTotais"
+      (close)="onTotalPlayersModalClose()"
+      (save)="atualizarJogadoresTotais($event)">
+    </app-total-players-modal>
 
   </div>
 </ng-container>

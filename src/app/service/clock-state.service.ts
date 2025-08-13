@@ -29,15 +29,15 @@ export class ClockStateService implements OnDestroy {
   private tempoInicialEmSegundos = 15 * 1;
 
   private nivelAtual = 1;
-  
+
   // Propriedades para controle do timer
   private tempoRestanteAoPausar: number = 0;
   private readonly _isPaused = new BehaviorSubject<boolean>(false);
   public readonly isPaused$ = this._isPaused.asObservable();
-  
+
   // Propriedade para o tempo de jogo progressivo
   private tempoDeJogoEmSegundos = 0;
-  
+
   // O estado inicial da aplicação
   private readonly _state = new BehaviorSubject<ClockState>({
     tempoRestante: '00:00',
@@ -166,7 +166,7 @@ export class ClockStateService implements OnDestroy {
           if (segundosRestantes < duracaoEmSegundos) { // Não incrementa no primeiro segundo
              this.tempoDeJogoEmSegundos++;
           }
-          
+
           this._updateState({
             tempoRestante: this._formatarTempo(segundosRestantes),
             tempoDeJogo: this._formatarTempoDeJogo(this.tempoDeJogoEmSegundos)
@@ -185,7 +185,7 @@ export class ClockStateService implements OnDestroy {
     const segundos = totalSegundos % 60;
     return `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
   }
-  
+
   private _formatarTempoDeJogo(totalSegundos: number): string {
     const horas = Math.floor(totalSegundos / 3600);
     const minutos = Math.floor((totalSegundos % 3600) / 60);
@@ -210,4 +210,12 @@ export class ClockStateService implements OnDestroy {
 
     this._state.next(updatedState);
   }
+
+  public atualizarJogadoresTotais(novoValor: number): void {
+  const estadoAtual = this._state.value;
+  this._state.next({
+    ...estadoAtual,
+    jogadoresTotais: novoValor
+  });
+}
 }

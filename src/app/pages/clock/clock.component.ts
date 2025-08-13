@@ -14,6 +14,7 @@ import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.compo
 import { LogoModalComponent } from "../logo-modal/logo-modal.component";
 import { AnteModalComponent, AnteConfig } from '../ante-modal/ante-modal.component';
 import { TimerControlModalComponent } from '../timer-control-modal/timer-control-modal.component'; //NOVO IMPORT
+import { TotalPlayersModalComponent } from "../total-players-modal/total-players-modal.component";
 
 // O Serviço de Estado
 import { ClockState, ClockStateService } from "../../service/clock-state.service";
@@ -31,7 +32,8 @@ import { ClockState, ClockStateService } from "../../service/clock-state.service
     GameTypeModalComponent,
     LogoModalComponent,
     AnteModalComponent,
-    TimerControlModalComponent
+    TimerControlModalComponent,
+    TotalPlayersModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -50,6 +52,7 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   public isLogoModalOpen = false;
   public isAnteModalOpen = false;
   public isTimerControlModalOpen = false;
+  public isTotalPlayersModalOpen = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -144,7 +147,7 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   private enableFullscreen() {
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
-    
+
     // Esconde a barra de navegação no Android
     if (navigator.userAgent.includes('Android')) {
       setTimeout(() => {
@@ -170,5 +173,20 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   public onTimerStop(): void {
     this.clockStateService.resetarTimer();
   }
-  // --- FIM DOS NOVOS MÉTODOS ---
+
+  public openTotalPlayersModal(): void {
+    this.isTotalPlayersModalOpen = true;
+    this.isOptionsModalOpen = false; // Fecha o modal de opções
+  }
+
+  public atualizarJogadoresTotais(novoValor: number): void {
+    this.clockStateService.atualizarJogadoresTotais(novoValor);
+    this.isTotalPlayersModalOpen = false;
+    this.isOptionsModalOpen = true; // Volta para o modal de opções
+  }
+
+  public onTotalPlayersModalClose(): void {
+    this.isTotalPlayersModalOpen = false;
+    this.isOptionsModalOpen = true; // Volta para o modal de opções
+  }
 }
