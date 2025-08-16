@@ -19,6 +19,7 @@ export class OptionsModalComponent {
   @Output() openLogoOptions = new EventEmitter<void>();
   @Output() openAnteOptions = new EventEmitter<void>();
   @Output() openTotalPlayersOptions = new EventEmitter<void>();
+  @Output() openBlindsStructureOptions = new EventEmitter<void>();
 
   onClose(): void {
     this.close.emit();

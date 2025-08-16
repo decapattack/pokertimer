@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AnteConfig } from '../pages/ante-modal/ante-modal.component'; // Import a interface
 
 
@@ -10,19 +10,13 @@ export interface NivelDeBlind {
   ante: number | null; // Alterado de 'number' para 'number | null'
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-// MODIFICADO: Nome da classe alterado para BlindService
-export class BlindService {
-
-  private readonly estruturaBlinds = [
+const DEFAULT_BLINDS_STRUCTURE = [
     // Fase 1: Inicial (Fichas de 25 em jogo)
     { sb: 25, bb: 50 },
     { sb: 50, bb: 100 },
     { sb: 75, bb: 150 },
     // --> Color Up: Remover fichas de 25
-    
+
     // Fase 2: Intermediária (Fichas de 100 em jogo)
     { sb: 100, bb: 200 },
     { sb: 150, bb: 300 },
@@ -133,43 +127,66 @@ export class BlindService {
     { sb: 500000000000, bb: 1000000000000 }
 ];
 
+@Injectable({
+  providedIn: 'root'
+})
+export class BlindService {
+
+  // 2. Esta é a estrutura "viva", que pode ser modificada durante a sessão.
+  private estruturaBlinds: { sb: number, bb: number }[];
   private nivelAtual = 0;
+  private anteConfig: AnteConfig = { type: 'none', value: 0 };
+  private blindsSubject: BehaviorSubject<NivelDeBlind>;
 
-  private anteConfig: AnteConfig = { type: 'none', value: 0 }; // Padrão: sem ante
+  public blindsAtuais$: Observable<NivelDeBlind>;
 
+  constructor() {
+    // 3. No início, a estrutura "viva" é sempre uma cópia da padrão.
+    this.estruturaBlinds = [...DEFAULT_BLINDS_STRUCTURE];
 
-  // MODIFICADO: O BehaviorSubject agora usa a nova interface
-  private blindsSubject = new BehaviorSubject<NivelDeBlind>(this.getNivelFormatado(0));
-  
-  public blindsAtuais$ = this.blindsSubject.asObservable();
+    this.blindsSubject = new BehaviorSubject<NivelDeBlind>(this.getNivelFormatado(0));
+    this.blindsAtuais$ = this.blindsSubject.asObservable();
+  }
 
-  constructor() { }
+  // 4. Este método agora substitui a estrutura APENAS em memória.
+  public definirNovaEstrutura(novaEstrutura: { sb: number, bb: number }[]): void {
+    this.estruturaBlinds = novaEstrutura;
+    this.resetarNiveis();
+  }
 
   public avancarNivel(): void {
     if (this.nivelAtual < this.estruturaBlinds.length - 1) {
       this.nivelAtual++;
-      const proximoNivel = this.getNivelFormatado(this.nivelAtual);
-      this.blindsSubject.next(proximoNivel);
-    } else {
-      console.log('Fim da estrutura de blinds!');
+      this.blindsSubject.next(this.getNivelFormatado(this.nivelAtual));
     }
   }
-  
-  // ---> MÉTODO MODIFICADO PARA CALCULAR O ANTE DINAMICAMENTE <---
+
+  public resetarNiveis(): void {
+    this.nivelAtual = 0;
+    this.blindsSubject.next(this.getNivelFormatado(this.nivelAtual));
+  }
+
+  // 5. Este método sempre será aplicado na estrutura correta que está em memória.
+  public configurarAnte(config: AnteConfig): void {
+    this.anteConfig = config;
+    this.blindsSubject.next(this.getNivelFormatado(this.nivelAtual));
+  }
+
   private getNivelFormatado(nivel: number): NivelDeBlind {
     const blind = this.estruturaBlinds[nivel];
-    //let anteValue: number | null = null;
+    let anteValue: number | null = null;
 
-    let anteValue = blind.bb >= 200 ? blind.bb/4 : null;
-
-    // A lógica do ante só se aplica se o Big Blind for 200 ou mais
     if (blind.bb >= 200) {
+      const defaultAnte = Math.round((blind.bb / 4) / 25) * 25;
+      anteValue = defaultAnte;
+
       if (this.anteConfig.type === 'initial') {
         anteValue = this.anteConfig.value;
       } else if (this.anteConfig.type === 'fraction') {
-        // Arredonda para o múltiplo de 25 mais próximo para manter fichas padrão
         const rawAnte = blind.bb / this.anteConfig.value;
         anteValue = Math.round(rawAnte / 25) * 25;
+      } else if (this.anteConfig.type === 'none') {
+        anteValue = null;
       }
     }
 
@@ -180,23 +197,7 @@ export class BlindService {
     };
   }
 
-  // ---> NOVO MÉTODO PÚBLICO PARA ATUALIZAR A CONFIGURAÇÃO <---
-  public configurarAnte(config: AnteConfig): void {
-    this.anteConfig = config;
-    // Força a atualização do nível atual para refletir a nova regra imediatamente
-    const nivelAtualizado = this.getNivelFormatado(this.nivelAtual);
-    this.blindsSubject.next(nivelAtualizado);
-  }
-
-  // --- NOVO MÉTODO IMPLEMENTADO ---
-  public resetarNiveis(): void {
-    // 1. Reseta o índice interno para o início da estrutura.
-    this.nivelAtual = 0;
-
-    // 2. Calcula o estado do primeiro nível (incluindo o ante) usando a lógica existente.
-    const primeiroNivel = this.getNivelFormatado(this.nivelAtual);
-
-    // 3. Emite o primeiro nível para todos os componentes e serviços que estão inscritos.
-    this.blindsSubject.next(primeiroNivel);
+  public getEstruturaAtual(): { sb: number, bb: number }[] {
+    return [...this.estruturaBlinds]; // Retorna uma cópia da estrutura em memória
   }
 }

@@ -212,10 +212,20 @@ export class ClockStateService implements OnDestroy {
   }
 
   public atualizarJogadoresTotais(novoValor: number): void {
-  const estadoAtual = this._state.value;
-  this._state.next({
-    ...estadoAtual,
-    jogadoresTotais: novoValor
-  });
+    const estadoAtual = this._state.value;
+    this._state.next({
+      ...estadoAtual,
+      jogadoresTotais: novoValor
+    });
+  }
+
+  /**
+ * NOVO MÉTODO
+ * Aceita uma nova estrutura de blinds, a define no BlindService e reseta todo o estado do jogo.
+ * @param novaEstrutura - Um array de objetos { sb: number, bb: number }.
+ */
+public carregarNovaEstruturaDeBlinds(novaEstrutura: { sb: number, bb: number }[]): void {
+  this.blindService.definirNovaEstrutura(novaEstrutura);
+  this.resetarTimer(); // O resetarTimer já zera o nível, tempo de jogo, etc.
 }
 }

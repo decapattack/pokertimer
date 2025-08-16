@@ -13,11 +13,13 @@ import { BackgroundModalComponent } from "../background-modal/background-modal.c
 import { GameTypeModalComponent } from "../game-type-modal/game-type-modal.component";
 import { LogoModalComponent } from "../logo-modal/logo-modal.component";
 import { AnteModalComponent, AnteConfig } from '../ante-modal/ante-modal.component';
-import { TimerControlModalComponent } from '../timer-control-modal/timer-control-modal.component'; //NOVO IMPORT
+import { TimerControlModalComponent } from '../timer-control-modal/timer-control-modal.component';
 import { TotalPlayersModalComponent } from "../total-players-modal/total-players-modal.component";
+import { BlindsStructureModalComponent, BlindLevel } from "../blinds-structure-modal/blinds-structure-modal.component";
 
 // O Serviço de Estado
 import { ClockState, ClockStateService } from "../../service/clock-state.service";
+
 
 @Component({
   selector: "app-clock",
@@ -33,7 +35,8 @@ import { ClockState, ClockStateService } from "../../service/clock-state.service
     LogoModalComponent,
     AnteModalComponent,
     TimerControlModalComponent,
-    TotalPlayersModalComponent
+    TotalPlayersModalComponent,
+    BlindsStructureModalComponent
   ],
   templateUrl: "./clock.component.html",
   styleUrls: ["./clock.component.css"],
@@ -53,6 +56,7 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   public isAnteModalOpen = false;
   public isTimerControlModalOpen = false;
   public isTotalPlayersModalOpen = false;
+  public isBlindsStructureModalOpen = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -188,5 +192,15 @@ export class ClockComponent implements OnInit { // Removido OnDestroy, pois não
   public onTotalPlayersModalClose(): void {
     this.isTotalPlayersModalOpen = false;
     this.isOptionsModalOpen = true; // Volta para o modal de opções
+  }
+
+  public openBlindsStructureModal(): void{
+    this.isOptionsModalOpen = false;
+    this.isBlindsStructureModalOpen = true;
+  }
+
+  public salvarBlindsStructure( novaEstrutura: BlindLevel[]): void{
+    this.clockStateService.carregarNovaEstruturaDeBlinds(novaEstrutura);
+    this.isBlindsStructureModalOpen = false;
   }
 }

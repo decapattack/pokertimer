@@ -1,0 +1,134 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content text-white">
+      <div class="modal-header border-0">
+        <h5 class="modal-title h4"><i class="fa-solid fa-layer-group me-2"></i> Configurar Estrutura de Blinds</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="close.emit()"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs nav-fill mb-3">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'templates'" (click)="activeTab = 'templates'">
+              <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Templates Prontos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 'personalizar'" (click)="activeTab = 'personalizar'">
+              <i class="fa-solid fa-pen-ruler me-2"></i> Personalizar
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade" [class.show]="activeTab === 'templates'" [class.active]="activeTab === 'templates'">
+            <div class="row">
+              <div class="col-md-6 mb-3" *ngFor="let template of templates">
+                <div class="card bg-dark-2 h-100">
+                  <div class="card-body">
+                    <h5 class="card-title text-highlight"><i class="fa-solid fa-trophy me-2"></i> {{ template.nome }}</h5>
+                    <p class="card-text small text-muted">{{ template.descricao }}</p>
+                    <div class="d-flex justify-content-between small">
+                      <span><span class="badge bg-primary">{{ template.niveis }} níveis</span></span>
+                      <span><strong>Início:</strong> {{ template.estrutura[0].sb }}/{{ template.estrutura[0].bb }}</span>
+                      <span><strong>Final:</strong> {{ template.estrutura[template.estrutura.length - 1].sb | number }}/{{ template.estrutura[template.estrutura.length - 1].bb | number }}</span>
+                    </div>
+                  </div>
+                  <div class="card-footer border-0">
+                    <button class="btn btn-highlight w-100" (click)="usarTemplate(template.estrutura)">
+                      <i class="fa-solid fa-check-double me-2"></i> Usar Template
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" [class.show]="activeTab === 'personalizar'" [class.active]="activeTab === 'personalizar'">
+            <div class="row">
+              <div class="col-md-7">
+                <h6 class="text-muted"><i class="fa-solid fa-list-ol me-2"></i> Estrutura Atual <span class="badge bg-secondary">{{ estruturaAtual.length }} níveis</span></h6>
+                <div class="table-responsive" style="max-height: 400px;">
+                  <table class="table table-dark table-striped table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col" style="width: 10%;"># Nível</th>
+                        <th scope="col"><i class="fa-solid fa-coins me-2"></i> Small Blind</th>
+                        <th scope="col"><i class="fa-solid fa-coins me-2"></i> Big Blind</th>
+                        <th scope="col" style="width: 15%;" class="text-center"><i class="fa-solid fa-gear me-2"></i> Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let nivel of estruturaAtual; let i = index">
+                        <th scope="row" class="text-center">{{ i + 1 }}</th>
+                        <td>{{ nivel.sb | number }}</td>
+                        <td>{{ nivel.bb | number }}</td>
+                        <td class="text-center">
+                          <button class="btn btn-sm btn-danger" (click)="removerNivel(i)" title="Remover Nível">
+                            <i class="fa-solid fa-trash-can"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="estruturaAtual.length === 0">
+                        <td colspan="4" class="text-center text-muted fst-italic py-5">
+                          Nenhum nível adicionado. Comece a criar sua estrutura!
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <h6 class="text-muted"><i class="fa-solid fa-plus-circle me-2"></i> Adicionar Nível</h6>
+                <div class="bg-dark-2 p-3 rounded">
+
+                  <div class="mb-4">
+                    <label class="form-label small text-muted">Sugestões Rápidas:</label>
+                    <div class="list-group">
+                      <button type="button" class="list-group-item list-group-item-action btn-sugestao" (click)="aplicarSugestao(sugestaoDobro)">
+                        <span><i class="fa-solid fa-arrow-up me-2"></i> Dobrar BB</span>
+                        <span class="badge">{{ sugestaoDobro?.bb | number }}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action btn-sugestao" (click)="aplicarSugestao(sugestao50)">
+                        <span><i class="fa-solid fa-plus me-2"></i> Aumentar 50%</span>
+                        <span class="badge">{{ sugestao50?.bb | number }}</span>
+                      </button>
+                      <button type="button" class="list-group-item list-group-item-action btn-sugestao" (click)="aplicarSugestao(sugestao25)">
+                        <span><i class="fa-solid fa-chart-line me-2"></i> Aumentar 25%</span>
+                        <span class="badge">{{ sugestao25?.bb | number }}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="smallBlindInput" class="form-label">Small Blind:</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                      <input type="number" class="form-control" id="smallBlindInput" [(ngModel)]="newSb" placeholder="Ex: 100">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="bigBlindInput" class="form-label">Big Blind:</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                      <input type="number" class="form-control" id="bigBlindInput" [(ngModel)]="newBb" placeholder="Ex: 200">
+                    </div>
+                  </div>
+                  <button class="btn btn-add-level w-100" (click)="adicionarNivel()" [disabled]="!newSb || !newBb">
+                    <i class="fa-solid fa-plus me-2"></i> Adicionar Nível
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="salvarEstrutura()">
+          <i class="fa-solid fa-save me-2"></i> Salvar Estrutura e Reiniciar Jogo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

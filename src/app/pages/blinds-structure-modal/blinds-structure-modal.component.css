@@ -1,0 +1,133 @@
+.modal-content {
+  background-color: #212529;
+  border: 1px solid #495057;
+}
+
+.nav-tabs .nav-link {
+  color: #adb5bd;
+  background-color: transparent;
+  border-color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  color: #fca311;
+  background-color: #343a40;
+  border-color: #495057 #495057 #343a40;
+  font-weight: bold;
+}
+
+.nav-tabs {
+  border-bottom-color: #495057;
+}
+
+.bg-dark-2 {
+  background-color: #343a40;
+}
+
+/* --- ✅ ESTILOS CORRIGIDOS E ADICIONADOS PARA OS CARDS --- */
+
+/* Garante que o texto padrão dentro dos cards seja branco */
+.card.bg-dark-2, .card.bg-dark-2 span, .card.bg-dark-2 strong {
+  color: #f8f9fa; /* Um branco padrão do Bootstrap, bem legível */
+}
+
+/* Sobrescreve a classe .text-muted para ser um cinza mais claro */
+.card.bg-dark-2 .text-muted {
+  color: #adb5bd !important; /* Usamos !important para garantir a sobreposição */
+}
+
+/* Garante que o título continue com o destaque laranja */
+.card.bg-dark-2 .card-title.text-highlight {
+  color: #fca311;
+}
+
+/* Botão de destaque (Usar Template) */
+.btn-highlight {
+  background-color: #fca311;
+  border-color: #fca311;
+  color: #212529; /* ✅ GARANTE QUE O TEXTO E ÍCONE SEJAM PRETOS */
+  font-weight: bold;
+}
+
+.btn-highlight:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529; /* Mantém o texto preto no hover */
+}
+
+/* --- Fim dos estilos para os Cards --- */
+
+
+.input-group-text {
+  background-color: #495057;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.form-control {
+  background-color: #343a40;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.form-control:focus {
+  background-color: #343a40;
+  border-color: #fca311;
+  box-shadow: 0 0 0 0.25rem rgba(252, 163, 17, 0.25);
+  color: #fff;
+}
+
+/* --- Estilos para a Aba Personalizar --- */
+
+.btn-sugestao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0dcaf0;
+  border-color: #08a1c4;
+  color: #000;
+  font-weight: 500;
+  margin-bottom: 5px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-sugestao:hover {
+  background-color: #3ee0ff;
+  border-color: #0dcaf0;
+  color: #000;
+  transform: scale(1.02);
+}
+
+.btn-sugestao .badge {
+  font-size: 0.9em;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #000;
+  padding: 0.4em 0.6em;
+  font-weight: bold;
+}
+
+.btn-add-level {
+  background-color: #198754;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.6rem;
+}
+
+.btn-add-level:hover {
+  background-color: #157347;
+}
+
+/* ✅ ADICIONE ESTA NOVA REGRA NO FINAL DO SEU ARQUIVO CSS */
+
+/* --- Estilo para o Texto do Placeholder --- */
+.form-control::placeholder {
+  color: #adb5bd; /* Um cinza claro para boa legibilidade (se preferir branco puro, use #FFFFFF) */
+  opacity: 1; /* Garante que a cor não fique transparente em alguns navegadores */
+}
+
+/* Para compatibilidade com navegadores mais antigos (opcional, mas recomendado) */
+.form-control::-webkit-input-placeholder { color: #adb5bd; }
+.form-control::-moz-placeholder { color: #adb5bd; opacity: 1; }
+.form-control:-ms-input-placeholder { color: #adb5bd; }
+.form-control::-ms-input-placeholder { color: #adb5bd; }

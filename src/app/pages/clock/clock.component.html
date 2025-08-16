@@ -173,7 +173,8 @@
       (openGameTypeOptions)="openGameTypeModal()"
       (openLogoOptions)="openLogoModal()"
       (openAnteOptions)="openAnteModal()"
-      (openTotalPlayersOptions)="openTotalPlayersModal()">
+      (openTotalPlayersOptions)="openTotalPlayersModal()"
+      (openBlindsStructureOptions)="openBlindsStructureModal()">
     </app-options-modal>
 
     <app-background-modal
@@ -218,6 +219,12 @@
       (close)="onTotalPlayersModalClose()"
       (save)="atualizarJogadoresTotais($event)">
     </app-total-players-modal>
+
+    <app-blinds-structure-modal
+      *ngIf="isBlindsStructureModalOpen"
+      (close)="isBlindsStructureModalOpen = false"
+      (save)="salvarBlindsStructure($event)">
+    </app-blinds-structure-modal>
 
   </div>
 </ng-container>
