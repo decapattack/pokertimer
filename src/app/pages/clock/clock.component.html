@@ -81,7 +81,7 @@
               <div class="value">500</div>
               <div class="label"><i class="fa-solid fa-stopwatch dourado"></i> TIME CHIP</div>
               <div class="value">500</div>
-              
+
             </div>
           </div>
         </div>
@@ -101,10 +101,21 @@
 
     <div *ngIf="isMobile$ | async" class="container-fluid mobile-layout">
       <div class="row mobile-header align-items-center mb-2">
-        <div class="col">
+        <div class="col-4">
           <img *ngIf="state.logoBase64" [src]="getSanitizedLogo(state.logoBase64)" class="main-logo-img-mobile" alt="Logo do Torneio">
         </div>
-        <div class="col text-end">
+        <div class="col-4 d-flex justify-content-center align-items-center blinds-banner">
+          <span>
+            MONSTER UNIVERSITÁRIO 10K
+          </span>
+          <span class="espaco-titulo-dia">
+            --
+          </span>
+          <span class="valor-dia-mobile">
+            DIA 1
+          </span>
+        </div>
+        <div class="col-4 text-end">
           <button
             class="btn btn-outline-light btn-sm"
             (click)="isOptionsModalOpen = true"
@@ -119,15 +130,20 @@
             <div class="label text-highlight">
               <i class="fa-solid fa-trophy"></i> NÍVEL {{ state.nivel }}
             </div>
-            <div class="value">DIA 1</div>
+            <div class="label"><i class="fa-solid fa-circle-dollar-to-slot dourado"></i> BUY-IN</div>
+            <div class="value">500</div>
+            <div class="label"><i class="fa-solid fa-circle-dollar-to-slot dourado"></i><i class="fa-solid fa-circle-dollar-to-slot dourado"></i> REBUY</div>
+            <div class="value">500</div>
             <div class="label clickable" (click)="isPlayersModalOpen = true">
-              <i class="fa-solid fa-users"></i> JOGADORES
+              <i class="fa-solid fa-users dourado"></i> JOGADORES
             </div>
             <div class="value clickable" (click)="isPlayersModalOpen = true">
               {{ state.jogadoresAtuais }}/{{ state.jogadoresTotais }}
             </div>
-            <div class="label"><i class="fa-solid fa-database"></i> MÉDIA</div>
+            <div class="label"><i class="fa-solid fa-database dourado"></i> MÉDIA</div>
             <div class="value">{{ state.mediaDeFichas | number:'1.0-0' }}</div>
+            <div class="label"><i class="fa-solid fa-stopwatch dourado"></i> TIME CHIP</div>
+              <div class="value">500</div>
           </div>
         </div>
         <div class="col-4 d-flex flex-column align-items-center">
@@ -145,17 +161,21 @@
         <div class="col-4">
           <div class="info-panel-mobile">
             <div class="label">
-              <i class="fa-solid fa-hourglass-start"></i> T. JOGO
+              <i class="fa-solid fa-hourglass-start dourado"></i> T. JOGO
             </div>
             <div class="value">{{ state.tempoDeJogo }}</div>
-            <div class="label"><i class="fa-solid fa-clock"></i> INTERVALO</div>
+            <div class="label"><i class="fa-solid fa-clock dourado"></i> INTERVALO</div>
             <div class="value">14:31</div>
             <div class="label clickable" (click)="isChipcountModalOpen = true">
-              <i class="fa-solid fa-database"></i> CHIPCOUNT
+              <i class="fa-solid fa-database dourado"></i> CHIPCOUNT
             </div>
             <div class="value clickable" (click)="isChipcountModalOpen = true">
               {{ state.chipcount | number:'1.0-0' }}
             </div>
+            <div class="label"><i class="fa-solid fa-layer-group dourado"></i> ADD-ON</div>
+              <div class="value">500</div>
+              <div class="label"><i class="fa-solid fa-hand-holding-dollar dourado"></i> TAXA ADM</div>
+              <div class="value">500</div>
           </div>
         </div>
       </div>
